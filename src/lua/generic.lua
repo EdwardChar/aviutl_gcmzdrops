@@ -1,13 +1,13 @@
 local P = {}
 
-P.name = "昗弨僴儞僪儔乕"
+P.name = "标准句柄"
 
--- 摿暿側張棟傪峴偆僗僋儕僾僩偑尒偮偐傜側偗傟偽
--- 嵟廔揑偵偙偺僗僋儕僾僩偑偦偺傑傑僼傽僀儖傪僪儘僢僾偡傞
+-- 特別な処理を行うスクリプトが見つからなければ
+-- 最終的にこのスクリプトがそのままファイルをドロップする
 P.priority = -100000
 
 function P.ondragenter(files, state)
-  -- TODO: exedit.ini 偺愝掕撪梕傪峫椂偟偰摦偔傛偆偵偡傞丠
+  -- TODO: exedit.ini の設定内容を考慮して動くようにする？
   return true
 end
 

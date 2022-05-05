@@ -35,7 +35,7 @@ error luafn_push_wstr(lua_State *const L, struct wstr const *const ws) {
 static error build_invalid_char_error(struct NATIVE_STR const *const filename ERR_FILEPOS_PARAMS) {
   struct NATIVE_STR s = {0};
   error err =
-      scpym(&s, NSTR("ファイル名 \""), filename->ptr, NSTR("\" には AviUtl 上で使用できない文字が含まれています。"));
+      scpym(&s, NSTR("文件名 \""), filename->ptr, NSTR("\" 包含AviUtl无法使用的字符。"));
   if (efailed(err)) {
     err = ethru(err);
     goto failed;
@@ -47,7 +47,7 @@ failed:
   ereport(err);
   return emsg(err_type_gcmz,
               err_gcmz_invalid_char,
-              &native_unmanaged(NSTR("ファイル名に AviUtl 上で使用できない文字が含まれています。")));
+              &native_unmanaged(NSTR("文件名中包含AviUtl无法使用的字符。")));
 }
 
 NODISCARD static error verify_filename(struct wstr const *const ws) {

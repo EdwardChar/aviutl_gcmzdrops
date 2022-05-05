@@ -1,8 +1,8 @@
 #pragma once
 #include "aviutl.h"
 
-#define GCMZDROPS_NAME_MBCS "\x82\xB2\x82\xBF\x82\xE1\x82\xDC\x82\xBA\x83\x68\x83\x8D\x83\x62\x83\x76\x83\x58"
-#define GCMZDROPS_NAME_WIDE L"ごちゃまぜドロップス"
+#define GCMZDROPS_NAME_MBCS "\xE9\x9A\x8F\xE6\x84\x8F\xE6\x8B\x96\xE6\x94\xBE"
+#define GCMZDROPS_NAME_WIDE L"随意拖放"
 
 #ifdef TEST_IMAGE_DIR
 #  define VERSION "vX.X.X ( testing )"

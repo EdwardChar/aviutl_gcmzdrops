@@ -1,21 +1,21 @@
 local P = {}
 
-P.name = "婛懚僼傽僀儖偺嵞棙梡"
+P.name = "既存ファイルの再利用"
 
--- 懠偺僗僋儕僾僩偑張棟偟偨屻偵僼傽僀儖傪嵎偟懼偊傞偲晄搒崌偑偁傞偺偱
--- 偙偺僗僋儕僾僩偼桪愭揑偵幚峴偝偣傞
--- 側偍丄偙偺僗僋儕僾僩偑僼傽僀儖偺嵎偟懼偊傪峴偭偨応崌丄
--- 尦偺 filepath 偼 orgfilepath 偲偟偰曐懚偝傟傑偡
+-- 他のスクリプトが処理した後にファイルを差し替えると不都合があるので
+-- このスクリプトは優先的に実行させる
+-- なお、このスクリプトがファイルの差し替えを行った場合、
+-- 元の filepath は orgfilepath として保存されます
 P.priority = 100000
 
--- 僼傽僀儖柤擖椡僟僀傾儘僌傪昞帵偡傞側傜 true丄偟側偄側傜 false
--- 偛偪傖傑偤僪儘僢僾僗 v0.1.x 偱偺嫇摦偵嬤偯偗傞側傜 true
+-- ファイル名入力ダイアログを表示するなら true、しないなら false
+-- ごちゃまぜドロップス v0.1.x での挙動に近づけるなら true
 P.renamable = false
 
 function P.ondragenter(files, state)
   for i, v in ipairs(files) do
     if GCMZDrops.needcopy(v.filepath) then
-      -- needcopy 偑 true 傪曉偡僼傽僀儖偼挷嵏偡傞昁梫偑偁傞偺偱 true
+      -- needcopy が true を返すファイルは調査する必要があるので true
       return true
     end
   end
@@ -23,7 +23,7 @@ function P.ondragenter(files, state)
 end
 
 function P.ondragover(files, state)
-  -- ondragenter 偱張棟偱偒偦偆側傕偺偼 ondragover 偱傕張棟偱偒偦偆側偺偱挷傋偢 true
+  -- ondragenter で処理できそうなものは ondragover でも処理できそうなので調べず true
   return true
 end
 
@@ -32,75 +32,75 @@ end
 
 function P.ondrop(files, state)
   for i, v in ipairs(files) do
-    -- 僐僺乕偑昁梫側僼傽僀儖偩偭偨傜
+    -- コピーが必要なファイルだったら
     if GCMZDrops.needcopy(v.filepath) then
       local filepath, created = P.getfile(v.filepath)
       if created then
-        debug_print("["..P.name.."] 偑 " .. v.filepath .. " 傪僴僢僔儏抣晅偒偺僼傽僀儖柤偵嵎偟懼偊傑偟偨丅尦偺僼傽僀儖偼 orgfilepath 偱庢摼偱偒傑偡丅")
+        debug_print("["..P.name.."] 将 " .. v.filepath .. " 替换为带有哈希值的文件名。可使用 orgfilepath 获取源文件。")
       else
         if filepath ~= '' then
-          debug_print("["..P.name.."] 偑 " .. v.filepath .. " 傪撪梕偑摨偠婛懚偺僼傽僀儖偱嵎偟懼偊傑偟偨丅尦偺僼傽僀儖偼 orgfilepath 偱庢摼偱偒傑偡丅")
+          debug_print("["..P.name.."] 将 " .. v.filepath .. " 替换为具有相同内容的现存文件。可使用 orgfilepath 获取源文件。")
         else
-          -- 儐乕僓乕偑僉儍儞僙儖偟偨偺偱偦偺傑傑慡懱傪僉儍儞僙儖
+          -- ユーザーがキャンセルしたのでそのまま全体をキャンセル
           return nil
         end
       end
       files[i] = {filepath=filepath, orgfilepath=v.filepath}
     end
   end
-  -- 懠偺僀儀儞僩僴儞僪儔乕偵傕張棟傪偝偣偨偄偺偱偙偙偼忢偵 false
+  -- 他のイベントハンドラーにも処理をさせたいのでここは常に false
   return false
 end
 
 -- f, created = P.getfile(filepath)
 --
---   偛偪傖傑偤僪儘僢僾僗偺曐懚梡僼僅儖僟乕偵摨偠僼傽僀儖偑側偄偐専嶕偟丄
---   偁傞応崌偼婛懚僼傽僀儖傊偺僷僗傪丄
---   側偄応崌偼曐懚梡僼僅儖僟乕偵僼傽僀儖傪僐僺乕偟丄僐僺乕偟偨僼傽僀儖傊偺僷僗傪曉偟傑偡丅
+--   ごちゃまぜドロップスの保存用フォルダーに同じファイルがないか検索し、
+--   ある場合は既存ファイルへのパスを、
+--   ない場合は保存用フォルダーにファイルをコピーし、コピーしたファイルへのパスを返します。
 --
---   [堷悢]
---     filepath 偵偼扵偟偨偄僼傽僀儖傊偺僷僗傪暥帤楍偱搉偟傑偡丅
+--   [引数]
+--     filepath には探したいファイルへのパスを文字列で渡します。
 --
---   [栠傝抣]
---     f 偵偼僼傽僀儖傊偺僷僗偑暥帤楍偱曉傝傑偡偑丄
---     儐乕僓乕偵傛傝張棟偑僉儍儞僙儖偝傟偨応崌偼嬻暥帤楍偑曉傝傑偡丅
---     created 偵偼怴偟偔僼傽僀儖傪嶌惉偟偨偐偳偆偐傪 boolean 偱曉偟傑偡丅
+--   [戻り値]
+--     f にはファイルへのパスが文字列で返りますが、
+--     ユーザーにより処理がキャンセルされた場合は空文字列が返ります。
+--     created には新しくファイルを作成したかどうかを boolean で返します。
 --
 function P.getfile(filepath)
-  -- 僼傽僀儖偺僴僢僔儏抣傪寁嶼偟偰僥僉僗僩昞尰偵曄宍
+  -- ファイルのハッシュ値を計算してテキスト表現に変形
   local hash = GCMZDrops.hashtostring(GCMZDrops.calcfilehash(filepath))
-  -- 僼傽僀儖僷僗傪僨傿儗僋僩儕丄僼傽僀儖柤丄奼挘巕偵暘夝
+  -- ファイルパスをディレクトリ、ファイル名、拡張子に分解
   local ext = filepath:match("[^.]+$")
   local name = filepath:match("[^/\\]+$")
   local dir = filepath:sub(1, #filepath-#name)
   name = name:sub(1, #name - #ext - 1)
 
-  -- 婛偵摨偠僴僢僔儏抣偲奼挘巕傪帩偭偨僼傽僀儖偑側偄偐扵偡
+  -- 既に同じハッシュ値と拡張子を持ったファイルがないか探す
   local exists = GCMZDrops.findallfile("*."..hash.."."..ext)
   if #exists > 0 then
     return exists[1], false
   end
 
   if P.renamable then
-    local ok, newname = GCMZDrops.prompt(name .. "." .. ext.. " 偵怴偟偄僼傽僀儖柤傪偮偗偰偔偩偝偄", name)
+    local ok, newname = GCMZDrops.prompt(name .. "." .. ext.. " 重命名", name)
     if not ok then
-      -- 儐乕僓乕偑僉儍儞僙儖偟偨
+      -- ユーザーがキャンセルした
       return '', false
     end
-    -- 僼傽僀儖柤偵巊偊側偄暥帤傪僼傿儖僞儕儞僌偡傞
+    -- ファイル名に使えない文字をフィルタリングする
     name = GCMZDrops.convertencoding(newname, "sjis", "utf8")
     name = name:gsub("[\1-\31\34\42\47\58\60\62\63\92\124\127]", "-")
     name = GCMZDrops.convertencoding(name, "utf8", "sjis")
   end
 
-  -- 僼傽僀儖傪僐僺乕偡傞偨傔偵撉傒弌偡
+  -- ファイルをコピーするために読み出す
   local f, err = io.open(filepath, "rb")
   if f == nil then
     error(err)
   end
   local data = f:read("*all")
   f:close()
-  -- 曐懚愭偵僼傽僀儖傪嶌惉偟偰彂偒崬傓
+  -- 保存先にファイルを作成して書き込む
   filepath = GCMZDrops.createfile(name, "."..hash.."."..ext)
   f, err = io.open(filepath, "wb")
   if f == nil then

@@ -506,7 +506,7 @@ NODISCARD static error analyse_exedit_window_image(uint8_t const *const image,
     return errg(err_null_pointer);
   }
   if (width < gcmz_minimum_window_width || height < gcmz_minimum_window_height) {
-    return emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("拡張編集ウィンドウの表示エリアが小さすぎます。")));
+    return emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("扩展编辑窗口的显示区域过小。")));
   }
 
   size_t const line_bytes = (width * 3 + 3) & ~3U;

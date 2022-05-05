@@ -87,7 +87,7 @@ static void gcmz_reporter(error e, struct NATIVE_STR const *const message, struc
 
 cleanup:
   if (efailed(err)) {
-    OutputDebugStringW(L"エラー内容をログファイルに出力できませんでした。");
+    OutputDebugStringW(L"错误内容无法输出至日志文件。");
     error err2 = error_to_string(err, &tmp);
     if (esucceeded(err2)) {
       OutputDebugStringW(tmp.ptr);
@@ -113,7 +113,7 @@ static BOOL main_init(HINSTANCE const inst) {
   }
   mtx_init(&g_reporter_mtx, mtx_plain);
   error_register_reporter(gcmz_reporter);
-  ereportmsg(error_gcmz_init(), &native_unmanaged(NSTR("エラーメッセージマッパーの登録に失敗しました。")));
+  ereportmsg(error_gcmz_init(), &native_unmanaged(NSTR("错误信息映射器注册失败。")));
   set_hinstance(inst);
   return TRUE;
 }

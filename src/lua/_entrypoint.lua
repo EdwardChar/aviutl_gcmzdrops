@@ -1,5 +1,5 @@
--- 偙傟偼偛偪傖傑偤僪儘僢僾僗偺僄儞僩儕乕億僀儞僩偱偡丅
--- 捠忢偺梡搑偱偼偙偺僼傽僀儖傪彂偒姺偊傞昁梫偼偁傝傑偣傫丅
+-- これはごちゃまぜドロップスのエントリーポイントです。
+-- 通常の用途ではこのファイルを書き換える必要はありません。
 local P = {}
 
 P.handlers = {}
@@ -28,7 +28,7 @@ function P.ondragenter(files, state)
       if h.ondragenter(files, state) then
         r = true
       else
-        debug_print("僀儀儞僩僴儞僪儔乕 ["..h.name.."] 偑 ondragenter 偱 false 傪曉偟傑偟偨")
+        debug_print("事件句柄["..h.name.."] 在 ondragenter 中返回 false")
         P.handlers[i] = false
       end
     end
@@ -43,7 +43,7 @@ function P.ondragover(files, state)
       if h.ondragover(files, state) then
         r = true
       else
-        debug_print("僀儀儞僩僴儞僪儔乕 ["..h.name.."] 偑 ondragover 偱 false 傪曉偟傑偟偨")
+        debug_print("事件句柄 ["..h.name.."] 在 ondragover 中返回 false")
         P.handlers[i] = false
       end
     end
@@ -65,17 +65,17 @@ function P.ondrop(files, state)
     if h ~= false then
       local f, s = h.ondrop(files, state)
       if f == nil then
-        debug_print("僀儀儞僩僴儞僪儔乕 ["..h.name.."] 偱張棟偑僉儍儞僙儖偝傟傑偟偨")
+        debug_print("事件句柄 ["..h.name.."] 处理被取消")
         return false
       elseif f ~= false then
         for i2, f2 in ipairs(f) do
           debug_print("[" .. i2 .. "] " .. f2.filepath)
         end
         GCMZDrops.drop(f, s)
-        debug_print("僀儀儞僩僴儞僪儔乕 ["..h.name.."] 偱張棟偑姰椆偟傑偟偨")
+        debug_print("事件句柄 ["..h.name.."] 处理完成")
         return true
       else
-        debug_print("僀儀儞僩僴儞僪儔乕 ["..h.name.."] 偱偼姰椆偟側偐偭偨偨傔師傊堏峴")
+        debug_print("事件句柄 ["..h.name.."] 未完成，执行下一个")
       end
     end
   end

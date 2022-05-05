@@ -1,44 +1,44 @@
--- 偛偪傖傑偤僪儘僢僾僗梡僀儀儞僩僴儞僪儔乕僗僋儕僾僩偺婰弎僒儞僾儖
--- 暥帤僐乕僪偼 Shift_JIS 偱婰弎偟偰偔偩偝偄
--- 乮仸偨偩偟丄偄傢備傞乽僟儊暥帤乿懳嶔偼摿偵偟偰偄傑偣傫乯
+-- ごちゃまぜドロップス用イベントハンドラースクリプトの記述サンプル
+-- 文字コードは Shift_JIS で記述してください
+-- （※ただし、いわゆる「ダメ文字」対策は特にしていません）
 local P = {}
 
--- 偙偺僴儞僪儔乕偺柤慜傪巜掕偟傑偡丅
--- 偙偺柤慜偼僨僶僢僌帪偵巊梡偝傟傑偡丅
-P.name = "僒儞僾儖僴儞僪儔乕"
+-- このハンドラーの名前を指定します。
+-- この名前はデバッグ時に使用されます。
+P.name = "样品句柄"
 
--- 偙偺僴儞僪儔乕偺張棟桪愭搙傪惍悢偱巜掕偟傑偡丅
--- 僼傽僀儖傪張棟偱偒傞僴儞僪儔乕偑暋悢偁傞応崌偵丄抣偑戝偒偄傎偳桪愭偝傟傑偡丅
+-- このハンドラーの処理優先度を整数で指定します。
+-- ファイルを処理できるハンドラーが複数ある場合に、値が大きいほど優先されます。
 P.priority = 0
 
--- ondragenter 偼僼傽僀儖傗僥僉僗僩傪僪儔僢僌偟丄
--- 奼挘曇廤僂傿儞僪僂忋偵儅僂僗偑忔偭偨弖娫偵屇偽傟傑偡丅
+-- ondragenter はファイルやテキストをドラッグし、
+-- 拡張編集ウィンドウ上にマウスが乗った瞬間に呼ばれます。
 function P.ondragenter(files, state)
-  -- files 偵偼僪儔僢僌偝傟偰偄傞傾僀僥儉偑攝楍乮僥乕僽儖乯偱搉偝傟傑偡丅
+  -- files にはドラッグされているアイテムが配列（テーブル）で渡されます。
   --
-  --   [椺1] 僄僋僗僾儘乕儔乕側偳偐傜僼傽僀儖偑僪儘僢僾偝傟傞応崌
+  --   [例1] エクスプローラーなどからファイルがドロップされる場合
   --     files = {
   --       {filepath="C:\Your\File\First.png"},
   --       {filepath="C:\Your\File\Second.wav"}
   --     }
   --
-  --     [曗懌忣曬]
-  --       僄僋僗僾儘乕儔乕埲奜偺僜僼僩偐傜僼傽僀儖傪捦傫偱偄傞帪偼
-  --       filepath 偱帵偝傟偨僼傽僀儖偑傑偩幚嵼偟側偄働乕僗偑偁傝傑偡丅
-  --       ondrop 埲奜偱僼傽僀儖偺撪梕傪嶲徠偟偨偄応崌偼
-  --       僼傽僀儖偑懚嵼偟側偐偭偨帪偺帠傕憐掕偟偰張棟傪彂偄偰偔偩偝偄丅
+  --     [補足情報]
+  --       エクスプローラー以外のソフトからファイルを掴んでいる時は
+  --       filepath で示されたファイルがまだ実在しないケースがあります。
+  --       ondrop 以外でファイルの内容を参照したい場合は
+  --       ファイルが存在しなかった時の事も想定して処理を書いてください。
   --
-  --   [椺2] Data URL scheme(RFC 2397) 偺僥僉僗僩偑僪儘僢僾偝傟傞応崌
+  --   [例2] Data URL scheme(RFC 2397) のテキストがドロップされる場合
   --     files = {
   --       {filepath="C:\Your\Image.png", mediatype="image/png"}
   --     }
   --
-  --     [曗懌忣曬]
-  --       乽data:text/plain,A%20brief%20note乿偺傛偆側僥僉僗僩傪斖埻慖戰偟偰
-  --       奼挘曇廤僂傿儞僪僂偵僪儘僢僾偝傟偨帪偺張棟偱偡丅
-  --       僽儔僂僓偐傜偺僪儘僢僾帪偵傕巊傢傟傞偙偲偑偁傝傑偡丅
-  --       "data:,A%20brief%20note" 偺傛偆側応崌偼 mediatype 偼嬻暥帤楍偱偡丅
-  --       僼傽僀儖偺奼挘巕偼 mediatype 偺撪梕偵廬偭偰埲壓偺傛偆偵寛掕偝傟傑偡丅
+  --     [補足情報]
+  --       「data:text/plain,A%20brief%20note」のようなテキストを範囲選択して
+  --       拡張編集ウィンドウにドロップされた時の処理です。
+  --       ブラウザからのドロップ時にも使われることがあります。
+  --       "data:,A%20brief%20note" のような場合は mediatype は空文字列です。
+  --       ファイルの拡張子は mediatype の内容に従って以下のように決定されます。
   --       "text/plain" - *.txt
   --       "image/jpeg" - *.jpg
   --       "image/gif"  - *.gif
@@ -46,30 +46,30 @@ function P.ondragenter(files, state)
   --       "image/webp" - *.webp
   --       "image/bmp"  - *.bmp
   --       "audio/wav"  - *.wav
-  --       偦傟埲奜     - *.bin
+  --       それ以外     - *.bin
   --
-  --   [椺3] 僽儔僂僓傗僥僉僗僩僄僨傿僞偱慖戰偟偨僥僉僗僩偑僪儘僢僾偝傟傞応崌
+  --   [例3] ブラウザやテキストエディタで選択したテキストがドロップされる場合
   --     files = {
   --       {filepath="C:\Your\Text.txt", mediatype="text/plain; charset=Shift_JIS"}
   --     }
   --
-  --     [曗懌忣曬]
-  --       僥僉僗僩偑僪儘僢僾偝傟傞応崌丄尦偺僨乕僞偑 Unicode 偩偭偨偲偟偰傕
-  --       帠慜偵 Shift_JIS 偵曄姺偝傟丄忢偵摨偠 mediatype 偱搉偝傟傑偡丅
+  --     [補足情報]
+  --       テキストがドロップされる場合、元のデータが Unicode だったとしても
+  --       事前に Shift_JIS に変換され、常に同じ mediatype で渡されます。
   --
-  --   [曗懌忣曬]
-  --     椺1乣3 偱嫇偘偨傕偺偼偛偪傖傑偤僪儘僢僾僗偺杮懱偐傜搉偝傟傞忣曬偱偡偑丄
-  --     帺嶌偟偨僗僋儕僾僩偵張棟偑夞偭偰偔傞傛傝傕愭偵
-  --     textsjis.lua 側偳暿偺僗僋儕僾僩偑幚峴偝傟傞偙偲偵傛傝丄
-  --     files 撪偺僼傽僀儖忣曬偵偼偙偙偱偼愢柧偝傟偰偄側偄懏惈偑捛壛偝傟偨傝丄
-  --     僪儘僢僾偝傟偰偄側偄僼傽僀儖偑捛壛偝傟偰偄偨傝偡傞偙偲偑偁傝傑偡丅
+  --   [補足情報]
+  --     例1～3 で挙げたものはごちゃまぜドロップスの本体から渡される情報ですが、
+  --     自作したスクリプトに処理が回ってくるよりも先に
+  --     textsjis.lua など別のスクリプトが実行されることにより、
+  --     files 内のファイル情報にはここでは説明されていない属性が追加されたり、
+  --     ドロップされていないファイルが追加されていたりすることがあります。
   --
-  --     偦傟傜偺巇慻傒偵怳傝夞偝傟偨偔側偄応崌偼
-  --     桪愭弴埵傪偲偰傕戝偒側抣偵偡傞偙偲偱夞旔偱偒傑偡偑丄
-  --     忬嫷偵傛偭偰偼撪梕偑摨偠僼傽僀儖偑偄偔偮傕嶌惉偝傟偰偟傑偆側偳丄
-  --     杮棃堄恾偟偰偄偨嫇摦偑夡傟偰偟傑偆壜擻惈傕偁傞偺偱拲堄偑昁梫偱偡丅
+  --     それらの仕組みに振り回されたくない場合は
+  --     優先順位をとても大きな値にすることで回避できますが、
+  --     状況によっては内容が同じファイルがいくつも作成されてしまうなど、
+  --     本来意図していた挙動が壊れてしまう可能性もあるので注意が必要です。
   --
-  -- state 偵偼儅僂僗偲僉乕儃乕僪偵娭偡傞忣曬偑僥乕僽儖偱搉偝傟傑偡丅
+  -- state にはマウスとキーボードに関する情報がテーブルで渡されます。
   --
   --   state = {
   --     x=123,
@@ -82,506 +82,506 @@ function P.ondragenter(files, state)
   --     rbutton=false
   --   }
   --
-  --   [曗懌忣曬]
-  --     椺偊偽 Shift 僉乕傪墴偟偨傑傑僪儘僢僾偝傟偨僼傽僀儖偩偗偵斀墳偟偨偄応崌偱傕丄
-  --     ondragenter 傗 ondragover 偺帪揰偱偼傑偩 Shift 僉乕偑墴偝傟偰偄側偄偙偲傕偁傝傑偡丅
-  --     偦偺帪偵 return false 偟偰偟傑偆偲
-  --     屻懕偺 odragover 傗 ondrop 偺帪偵僴儞僪儔乕偑屇偽傟側偄偺偱拲堄偑昁梫偱偡丅
+  --   [補足情報]
+  --     例えば Shift キーを押したままドロップされたファイルだけに反応したい場合でも、
+  --     ondragenter や ondragover の時点ではまだ Shift キーが押されていないこともあります。
+  --     その時に return false してしまうと
+  --     後続の odragover や ondrop の時にハンドラーが呼ばれないので注意が必要です。
 
-  -- 僼傽僀儖偑張棟偱偒傞丄傕偟偔偼張棟偱偒偦偆側応崌偼 true 傪曉偟偰偔偩偝偄丅
+  -- ファイルが処理できる、もしくは処理できそうな場合は true を返してください。
   return false
 end
 
--- ondragover 偼僼傽僀儖傗僥僉僗僩傪僪儔僢僌偟偨傑傑丄
--- 奼挘曇廤僂傿儞僪僂忋偱儅僂僗偑摦偔搙偵屇偽傟傑偡丅
--- 偨偩偟 ondragenter 傗 ondragover 偱 false 傪曉偟偰偄偨応崌偼屇偽傟傑偣傫丅
+-- ondragover はファイルやテキストをドラッグしたまま、
+-- 拡張編集ウィンドウ上でマウスが動く度に呼ばれます。
+-- ただし ondragenter や ondragover で false を返していた場合は呼ばれません。
 function P.ondragover(files, state)
-  -- files, state 偺撪梕偼 ondragenter 偲摨偠偱偡丅
-  -- 偙偺僀儀儞僩僴儞僪儔偼崅昿搙偱屇偽傟傞偨傔丄廳偄張棟偼峴傢側偄偱偔偩偝偄丅
+  -- files, state の内容は ondragenter と同じです。
+  -- このイベントハンドラは高頻度で呼ばれるため、重い処理は行わないでください。
 
-  -- 僼傽僀儖偑張棟偱偒傞丄傕偟偔偼張棟偱偒偦偆側応崌偼 true 傪曉偟偰偔偩偝偄丅
+  -- ファイルが処理できる、もしくは処理できそうな場合は true を返してください。
   return false
 end
 
--- ondragleave 偼僼傽僀儖傗僥僉僗僩傪僪儔僢僌偟偰偄傞儅僂僗僇乕僜儖偑
--- 奼挘曇廤僂傿儞僪僂忋偐傜棧傟偨帪傗丄僪儔僢僌帺懱偑拞抐偝傟偨帪偵屇偽傟傑偡丅
--- 偨偩偟 ondragenter 傗 ondragover 偱 false 傪曉偟偰偄偨応崌偼屇偽傟傑偣傫丅
+-- ondragleave はファイルやテキストをドラッグしているマウスカーソルが
+-- 拡張編集ウィンドウ上から離れた時や、ドラッグ自体が中断された時に呼ばれます。
+-- ただし ondragenter や ondragover で false を返していた場合は呼ばれません。
 function P.ondragleave()
-  -- 栠傝抣偼偁傝傑偣傫丅
+  -- 戻り値はありません。
 end
 
--- ondrop 偼儅僂僗儃僞儞偑棧偝傟丄僼傽僀儖偑僪儘僢僾偝傟偨帪偵屇偽傟傑偡丅
--- 偨偩偟 ondragenter 傗 ondragover 偱 false 傪曉偟偰偄偨応崌偼屇偽傟傑偣傫丅
+-- ondrop はマウスボタンが離され、ファイルがドロップされた時に呼ばれます。
+-- ただし ondragenter や ondragover で false を返していた場合は呼ばれません。
 function P.ondrop(files, state)
-  -- files, state 偺撪梕偼 ondragenter 偲摨偠偱偡丅
+  -- files, state の内容は ondragenter と同じです。
 
-  -- 僼傽僀儖傪張棟偱偒側偐偭偨応崌偼 false 傪曉偟偰偔偩偝偄丅
-  -- false 傪曉偡偲暿偺僀儀儞僩僴儞僪儔乕偵張棟偑堏峴偟傑偡丅
+  -- ファイルを処理できなかった場合は false を返してください。
+  -- false を返すと別のイベントハンドラーに処理が移行します。
   return false
 
-  -- 張棟拞偵儐乕僓乕偺憖嶌偵傛偭偰僉儍儞僙儖偑梫媮偝傟偨応崌側偳丄
-  -- 僼傽僀儖傪張棟偣偢丄偐偮暿偺僀儀儞僩僴儞僪儔乕傕幚峴偡傋偒偱側偄応崌偼
-  -- nil 傪曉偡偲張棟傪姰慡偵拞抐偡傞偙偲偑偱偒傑偡丅
+  -- 処理中にユーザーの操作によってキャンセルが要求された場合など、
+  -- ファイルを処理せず、かつ別のイベントハンドラーも実行すべきでない場合は
+  -- nil を返すと処理を完全に中断することができます。
   -- return nil
   --
-  -- 張棟偱偒偨応崌偼僼傽僀儖堦棗偲儅僂僗埵抲傪曉偟偰偔偩偝偄丅
-  -- 僪儘僢僾偝傟偨僼傽僀儖傪偦偺傑傑奼挘曇廤僂傿儞僪僂偵僪儘僢僾偡傞応崌偼
-  -- ondrop 偵搉偝傟偨堷悢傪偦偺傑傑搉偣偽慡偰僪儘僢僾偝傟傑偡丅
+  -- 処理できた場合はファイル一覧とマウス位置を返してください。
+  -- ドロップされたファイルをそのまま拡張編集ウィンドウにドロップする場合は
+  -- ondrop に渡された引数をそのまま渡せば全てドロップされます。
   -- return files, state
   --
-  -- 帺暘偱僪儘僢僾偡傞僨乕僞傪慻傒棫偰傞応崌偼埲壓傪嶲峫偵偟偰偔偩偝偄丅
-  -- 側偍丄張棟拞偵嶌惉乛僐僺乕偝傟傞堦帪揑偱偼側偄僼傽僀儖偼
-  -- 慡偰儐乕僓乕偑愝掕偟偨僼僅儖僟撪偵偍偝傑傞傛偆偵攝抲偡傞偺偑朷傑偟偄偱偡丅
-  -- 偦傟埲奜偺応強偵塱懕揑側僼傽僀儖傪嶌惉偡傞僗僋儕僾僩傪嶌惉偡傞応崌偼
-  -- 儐乕僓乕偵僐儞僙儞僒僗傪摼偨忋偱乮仸乯峴偆傛偆偵偟偰偔偩偝偄丅
-  -- 仸僪僉儏儊儞僩側偳偵婰嵹偡傞丄GCMZDrops.confirm 偱妋擣偡傞丄側偳
+  -- 自分でドロップするデータを組み立てる場合は以下を参考にしてください。
+  -- なお、処理中に作成／コピーされる一時的ではないファイルは
+  -- 全てユーザーが設定したフォルダ内におさまるように配置するのが望ましいです。
+  -- それ以外の場所に永続的なファイルを作成するスクリプトを作成する場合は
+  -- ユーザーにコンセンサスを得た上で（※）行うようにしてください。
+  -- ※ドキュメントなどに記載する、GCMZDrops.confirm で確認する、など
   --
-  --   files 偵偼埲壓偺傛偆側攝楍乮僥乕僽儖乯傪巜掕偟傑偡丅
+  --   files には以下のような配列（テーブル）を指定します。
   --     files = {
   --       {filepath="C:\Your\File.png"},
   --       {filepath="C:\Your\File2.png"},
   --       ...
   --     }
   --  
-  --     [曗懌忣曬]
-  --       files 偵偼攝楍乮僥乕僽儖乯偱暋悢偺僼傽僀儖傪巜掕偱偒傑偡偑丄
-  --       侾偮偺僼傽僀儖偵傛偭偰僞僀儉儔僀儞忋偵暋悢偺傾僀僥儉偑捛壛偝傟傞応崌丄
-  --       偦偺僼傽僀儖埲崀偼惓偟偔側偄埵抲偵僪儘僢僾偝傟傞偙偲偑偁傝傑偡丅
-  --       乮椺偊偽 *.exo 傗摦夋傪僪儘僢僾偟偨応崌偵敪惗偟傑偡乯
+  --     [補足情報]
+  --       files には配列（テーブル）で複数のファイルを指定できますが、
+  --       １つのファイルによってタイムライン上に複数のアイテムが追加される場合、
+  --       そのファイル以降は正しくない位置にドロップされることがあります。
+  --       （例えば *.exo や動画をドロップした場合に発生します）
   --  
-  --   state 偵偼埲壓偺傛偆側僥乕僽儖傪搉偟傑偡丅
+  --   state には以下のようなテーブルを渡します。
   --     state = {
-  --       -- 僼傽僀儖傪僪儘僢僾偡傞儅僂僗僇乕僜儖埵抲
+  --       -- ファイルをドロップするマウスカーソル位置
   --       x=120,
   --       y=235,
-  --       -- 僪儘僢僾張棟屻偵恑傔傞奼挘曇廤僇乕僜儖偺僼儗乕儉悢
-  --       -- 仸捠忢偺僪儘僢僾偱偼僇乕僜儖偼柍娭學側埵抲偵偁傞偨傔丄巜掕偡傞昁梫偼偁傝傑偣傫
+  --       -- ドロップ処理後に進める拡張編集カーソルのフレーム数
+  --       -- ※通常のドロップではカーソルは無関係な位置にあるため、指定する必要はありません
   --       frameadvance=0
   --     }
 end
 
--- 偛偪傖傑偤僪儘僢僾僗忋偺 Lua 偱偼埲壓偺娭悢傗僥乕僽儖偑巊梡壜擻偱偡丅
--- 張棟拞偵偼堷悢傗忬嫷偵墳偠偰僄儔乕偑敪惗偡傞偙偲偑偁傝丄偦傟傜偼 pcall 偱曔懆偱偒傑偡丅
+-- ごちゃまぜドロップス上の Lua では以下の関数やテーブルが使用可能です。
+-- 処理中には引数や状況に応じてエラーが発生することがあり、それらは pcall で捕捉できます。
 --
 -- debug_print(str)
 --
---   AviUtl 懁偺 Lua 偱巊偊傞傕偺偲摨偠傕偺偱偡丅
+--   AviUtl 側の Lua で使えるものと同じものです。
 --   DebugView https://technet.microsoft.com/ja-jp/sysinternals/debugview.aspx
---   側偳傪巊偆偙偲偱弌椡撪梕傪儕傾儖僞僀儉偵妋擣偡傞偙偲偑偱偒傞偨傔尒捠偟偑椙偔側傝傑偡丅
+--   などを使うことで出力内容をリアルタイムに確認することができるため見通しが良くなります。
 --
---   [堷悢]
---     str 偵偼僨僶僢僌弌椡偟偨偄暥帤楍傪巜掕偟傑偡丅
+--   [引数]
+--     str にはデバッグ出力したい文字列を指定します。
 --
---   [栠傝抣]
---     栠傝抣偼偁傝傑偣傫丅
+--   [戻り値]
+--     戻り値はありません。
 --
 -- scriptdir = GCMZDrops.scriptdir()
 --
---   偛偪傖傑偤僪儘僢僾僗梡偺僗僋儕僾僩僼傽僀儖偑奿擺偝傟偰偄傞
---   GCMZDrops 僼僅儖僟乕偺応強傪曉偟傑偡丅
+--   ごちゃまぜドロップス用のスクリプトファイルが格納されている
+--   GCMZDrops フォルダーの場所を返します。
 --
---   [栠傝抣]
---     GCMZDrops 僼僅儖僟乕偺応強傪曉偟傑偡丅
---     曉偝傟傞僷僗偺嵟屻偵偼昁偢 \ 偑晅梌偝傟偰偄傑偡丅
+--   [戻り値]
+--     GCMZDrops フォルダーの場所を返します。
+--     返されるパスの最後には必ず \ が付与されています。
 --
 -- filename = GCMZDrops.createfile(name, ext)
 --
---   偛偪傖傑偤僪儘僢僾僗偺曐懚梡僼僅儖僟偵
---   name 偺僼傽僀儖柤偲 ext 偺奼挘巕傪帩偮僼傽僀儖傪嶌惉偟傑偡丅
---   嶌惉偝傟偨僼傽僀儖偼張棟拞偵僗僋儕僾僩僄儔乕偑敪惗偟偨帪丄
---   偍傛傃僪儘僢僾偑僉儍儞僙儖偝傟偨帪偼嶍彍偝傟傑偡丅
+--   ごちゃまぜドロップスの保存用フォルダに
+--   name のファイル名と ext の拡張子を持つファイルを作成します。
+--   作成されたファイルは処理中にスクリプトエラーが発生した時、
+--   およびドロップがキャンセルされた時は削除されます。
 --
---   [堷悢]
---     name 偵偼嶌惉偟偨偄僼傽僀儖偺柤慜傪 "foo" 偺傛偆側宍偱巜掕偟傑偡丅
---     ext 偵偼嶌惉偟偨偄僼傽僀儖偺奼挘巕傪 ".txt" 偺傛偆側宍偱巜掕偟傑偡丅
---     婛偵摨偠柤慜偺僼傽僀儖偑懚嵼偡傞応崌側偳偵偼柤慜偼曄峏偝傟傞偙偲偑偁傝傑偡丅
+--   [引数]
+--     name には作成したいファイルの名前を "foo" のような形で指定します。
+--     ext には作成したいファイルの拡張子を ".txt" のような形で指定します。
+--     既に同じ名前のファイルが存在する場合などには名前は変更されることがあります。
 --
---   [栠傝抣]
---     filename 偵偼嶌惉偝傟偨僼傽僀儖偺柤慜傪曉偟傑偡丅
+--   [戻り値]
+--     filename には作成されたファイルの名前を返します。
 --
 -- filename = GCMZDrops.createtempfile(name, ext)
 --
---   Windows 偺 Temp 僼僅儖僟偵
---   name 偺僼傽僀儖柤偲 ext 偺奼挘巕傪帩偮僼傽僀儖傪嶌惉偟傑偡丅
---   嶌惉偝傟偨僼傽僀儖偼僪儘僢僾張棟偺廔椆屻偵嶍彍偝傟傑偡丅
+--   Windows の Temp フォルダに
+--   name のファイル名と ext の拡張子を持つファイルを作成します。
+--   作成されたファイルはドロップ処理の終了後に削除されます。
 --
---   [堷悢]
---     name 偵偼嶌惉偟偨偄僼傽僀儖偺柤慜傪 "foo" 偺傛偆側宍偱巜掕偟傑偡丅
---     ext 偵偼嶌惉偟偨偄僼傽僀儖偺奼挘巕傪 ".txt" 偺傛偆側宍偱巜掕偟傑偡丅
---     婛偵摨偠柤慜偺僼傽僀儖偑懚嵼偡傞応崌側偳偵偼柤慜偼曄峏偝傟傞偙偲偑偁傝傑偡丅
+--   [引数]
+--     name には作成したいファイルの名前を "foo" のような形で指定します。
+--     ext には作成したいファイルの拡張子を ".txt" のような形で指定します。
+--     既に同じ名前のファイルが存在する場合などには名前は変更されることがあります。
 --
---   [栠傝抣]
---     filename 偵偼嶌惉偝傟偨僼傽僀儖偺柤慜傪曉偟傑偡丅
+--   [戻り値]
+--     filename には作成されたファイルの名前を返します。
 --
 -- files = GCMZDrops.findallfile(wildcard)
 --
---   wildcard 偵堦抳偡傞僼傽僀儖傪
---   偛偪傖傑偤僪儘僢僾僗偺曐懚梡僼僅儖僟偺拞偐傜専嶕偟傑偡丅
+--   wildcard に一致するファイルを
+--   ごちゃまぜドロップスの保存用フォルダの中から検索します。
 --
---   [堷悢]
---     wildcard 偵偼挷傋偨偄僼傽僀儖柤傪 "foo.txt" 偺傛偆側宍偱巜掕偟傑偡丅
---     傑偨 "foo.*" 偺傛偆側巜掕傪偡傞偲
---     "foo.txt" "foo.wav" 側偳偺僼傽僀儖偵僸僢僩偝偣傞偙偲偑偱偒傑偡丅
+--   [引数]
+--     wildcard には調べたいファイル名を "foo.txt" のような形で指定します。
+--     また "foo.*" のような指定をすると
+--     "foo.txt" "foo.wav" などのファイルにヒットさせることができます。
 --
---   [栠傝抣]
---     files 偵偼僸僢僩偟偨僼傽僀儖柤偑攝楍乮僥乕僽儖乯偱曉偟傑偡丅
---     傂偲偮傕僸僢僩偟側偄応崌傗専嶕愭僼僅儖僟乕偑懚嵼偟側偄応崌偼嬻偺僥乕僽儖傪曉偟傑偡丅
+--   [戻り値]
+--     files にはヒットしたファイル名が配列（テーブル）で返します。
+--     ひとつもヒットしない場合や検索先フォルダーが存在しない場合は空のテーブルを返します。
 --
 -- r = GCMZDrops.englishpatched()
 --
---   奼挘曇廤偑塸岅壔僷僢僠偑摉偨偭偨傕偺偐偳偆偐傪曉偟傑偡丅
---   塸岅壔偝傟偰偄傞応崌 "*.exo" 傗 "*.exa" 偺撪梕傕曄峏偑昁梫偵偁傝傑偡丅
+--   拡張編集が英語化パッチが当たったものかどうかを返します。
+--   英語化されている場合 "*.exo" や "*.exa" の内容も変更が必要にあります。
 --
---   [栠傝抣]
---     塸岅壔僷僢僠偑摉偨偭偰偄傞応崌偼 true 傪曉偟傑偡丅
+--   [戻り値]
+--     英語化パッチが当たっている場合は true を返します。
 --
 -- r = GCMZDrops.needcopy(filepath)
 --
---   尰嵼偺乽張棟儌乕僪乿愝掕偱 filepath 偼僐僺乕偑昁梫偐偳偆偐傪曉偟傑偡丅
---   僐僺乕偑昁梫側応強偱偁偭偰傕僼傽僀儖偺奼挘巕偑
---   ".txt" ".exo" ".exa" 偺偄偢傟偐偺応崌偼 false 傪曉偟傑偡丅
+--   現在の「処理モード」設定で filepath はコピーが必要かどうかを返します。
+--   コピーが必要な場所であってもファイルの拡張子が
+--   ".txt" ".exo" ".exa" のいずれかの場合は false を返します。
 --
---   [堷悢]
---     filepath 偵偼僐僺乕偑昁梫偐偳偆偐傪挷傋偨偄僼傽僀儖傪巜掕偟傑偡丅
+--   [引数]
+--     filepath にはコピーが必要かどうかを調べたいファイルを指定します。
 --
---   [栠傝抣]
---     r 偵偼僐僺乕偑昁梫偐偳偆偐傪曉偟傑偡丅
+--   [戻り値]
+--     r にはコピーが必要かどうかを返します。
 --
 -- hash = GCMZDrops.calchash(hash, str)
 --
---   str 偺僴僢僔儏抣傪寁嶼偟傑偡丅
+--   str のハッシュ値を計算します。
 --
---   [堷悢]
---     hash 偵偼慜夞摼傜傟偨僴僢僔儏抣傪搉偟傑偡丅
---     堦斣嵟弶偺屇傃弌偟偺帪偼 0 傪搉偟偰偔偩偝偄丅
+--   [引数]
+--     hash には前回得られたハッシュ値を渡します。
+--     一番最初の呼び出しの時は 0 を渡してください。
 --
---     str 偵偼僴僢僔儏抣傪寁嶼偟偨偄僨乕僞傪暥帤楍偲偟偰搉偟傑偡丅
+--     str にはハッシュ値を計算したいデータを文字列として渡します。
 --
---   [栠傝抣]
---     hash 偵偼 64bit 偺僴僢僔儏抣傪暥帤楍偲偟偰曉偟傑偡丅
+--   [戻り値]
+--     hash には 64bit のハッシュ値を文字列として返します。
 --
 -- hash = GCMZDrops.calcfilehash(filepath)
 --
---   filepath 偺僴僢僔儏抣傪寁嶼偟傑偡丅
+--   filepath のハッシュ値を計算します。
 --
---   [堷悢]
---     filepath 偵偼僴僢僔儏抣傪寁嶼偟偨偄僼傽僀儖僷僗傪搉偟傑偡丅
+--   [引数]
+--     filepath にはハッシュ値を計算したいファイルパスを渡します。
 --
---   [栠傝抣]
---     hash 偵偼 64bit 偺僴僢僔儏抣傪暥帤楍偲偟偰曉偟傑偡丅
+--   [戻り値]
+--     hash には 64bit のハッシュ値を文字列として返します。
 --
 -- str = GCMZDrops.hashtostring(hash)
 --
---   僴僢僔儏抣傪僥僉僗僩偱昞尰壜擻側宍幃偵曄姺偟傑偡丅
+--   ハッシュ値をテキストで表現可能な形式に変換します。
 --
---   [堷悢]
---     hash 偵偼 calchash/calcfilehash 偺栠傝抣傪搉偟偰偔偩偝偄丅
+--   [引数]
+--     hash には calchash/calcfilehash の戻り値を渡してください。
 --
---   [栠傝抣]
---     str 偵偼僴僢僔儏抣偑 base32 僄儞僐乕僪偝傟偨暥帤楍傪曉偟傑偡丅
+--   [戻り値]
+--     str にはハッシュ値が base32 エンコードされた文字列を返します。
 --
 -- fileinfo = GCMZDrops.getexeditfileinfo()
 --
---   奼挘曇廤偱曇廤偟偰偄傞僾儘僕僃僋僩偵娭偡傞忣曬傪庢摼偟傑偡丅
+--   拡張編集で編集しているプロジェクトに関する情報を取得します。
 --
---   [栠傝抣]
---     fileinfo 偵偼埲壓偺傛偆側僥乕僽儖傪曉偟傑偡丅
+--   [戻り値]
+--     fileinfo には以下のようなテーブルを返します。
 --     fileinfo = {
---       -- 摦夋偺暆
+--       -- 動画の幅
 --       width=1280,
---       -- 摦夋偺崅偝
+--       -- 動画の高さ
 --       height=720,
---       -- 摦夋偺僼儗乕儉儗乕僩(30fps偺帪偼30丄59.97fps偺帪偼5997側偳)
+--       -- 動画のフレームレート(30fpsの時は30、59.97fpsの時は5997など)
 --       rate=30,
---       -- 摦夋偺僼儗乕儉儗乕僩偺僗働乕儖(30fps偺帪偼1丄59.97fps偺帪偼100側偳)
+--       -- 動画のフレームレートのスケール(30fpsの時は1、59.97fpsの時は100など)
 --       scale=1,
---       -- 摦夋偺憤僼儗乕儉悢
+--       -- 動画の総フレーム数
 --       length=456,
---       -- 壒惡偺僒儞僾儖儗乕僩
+--       -- 音声のサンプルレート
 --       audio_rate=48000,
---       -- 壒惡偺僠儍儞僱儖悢
+--       -- 音声のチャンネル数
 --       audio_ch=2
 --     }
 --
 -- fileinfo = GCMZDrops.getfileinfo(filepath)
 --
---   *.avi 傗 *.wav 側偳傪 AviUtl 偱奐偄偰奺庬忣曬傪庢摼偟傑偡丅
---   奼挘曇廤偱傑偩僾儘僕僃僋僩偑奐偐傟偰偄側偄応崌偼僄儔乕偑敪惗偟傑偡丅
+--   *.avi や *.wav などを AviUtl で開いて各種情報を取得します。
+--   拡張編集でまだプロジェクトが開かれていない場合はエラーが発生します。
 --
---   [堷悢]
---     filepath 偵偼忣曬傪庢摼偟偨偄儊僨傿傾僼傽僀儖傊偺僷僗傪搉偟傑偡丅
+--   [引数]
+--     filepath には情報を取得したいメディアファイルへのパスを渡します。
 --
---   [栠傝抣]
---     fileinfo 偵偼埲壓偺傛偆側僥乕僽儖傪曉偟傑偡丅
+--   [戻り値]
+--     fileinfo には以下のようなテーブルを返します。
 --     fileinfo = {
---       -- 摦夋偺暆
+--       -- 動画の幅
 --       width=1280,
---       -- 摦夋偺崅偝
+--       -- 動画の高さ
 --       height=720,
---       -- 摦夋偺僼儗乕儉儗乕僩(30fps偺帪偼30丄59.97fps偺帪偼5997側偳)
+--       -- 動画のフレームレート(30fpsの時は30、59.97fpsの時は5997など)
 --       rate=30,
---       -- 摦夋偺僼儗乕儉儗乕僩偺僗働乕儖(30fps偺帪偼1丄59.97fps偺帪偼100側偳)
+--       -- 動画のフレームレートのスケール(30fpsの時は1、59.97fpsの時は100など)
 --       scale=1,
---       -- 摦夋偺憤僼儗乕儉悢
+--       -- 動画の総フレーム数
 --       length=456,
---       -- 壒惡偺僒儞僾儖儗乕僩
+--       -- 音声のサンプルレート
 --       audio_rate=48000,
---       -- 壒惡偺僠儍儞僱儖悢
+--       -- 音声のチャンネル数
 --       audio_ch=2,
---       -- 僒儞僾儖儗乕僩側偳傪僾儘僕僃僋僩偵崌傢偣偨応崌偺壒惡偺憤僒儞僾儖悢
+--       -- サンプルレートなどをプロジェクトに合わせた場合の音声の総サンプル数
 --       audio_samples=123343
 --     }
 --
 -- encstr = GCMZDrops.encodeexotext(str)
 --
---   暥帤楍傪 AviUtl 偺 exo 僼傽僀儖傗 exa 僼傽僀儖偱巊傢傟傞
---   僥僉僗僩僆僽僕僃僋僩偺僥僉僗僩梡宍幃偵僄儞僐乕僪偟傑偡丅
+--   文字列を AviUtl の exo ファイルや exa ファイルで使われる
+--   テキストオブジェクトのテキスト用形式にエンコードします。
 --
---   [堷悢]
---     str 偵偼僄儞僐乕僪偟偨偄暥帤楍傪 Shift_JIS 偱搉偟傑偡丅
+--   [引数]
+--     str にはエンコードしたい文字列を Shift_JIS で渡します。
 --
---   [栠傝抣]
---     encstr 偵偼
+--   [戻り値]
+--     encstr には
 --     "533093306b3061306f30164e4c750000..."
---     偺傛偆側暥帤楍傪曉偟傑偡丅
+--     のような文字列を返します。
 --
 -- encstr = GCMZDrops.encodeexotextutf8(str)
 --
---   暥帤楍傪 AviUtl 偺 exo 僼傽僀儖傗 exa 僼傽僀儖偱巊傢傟傞
---   僥僉僗僩僆僽僕僃僋僩偺僥僉僗僩梡宍幃偵僄儞僐乕僪偟傑偡丅
+--   文字列を AviUtl の exo ファイルや exa ファイルで使われる
+--   テキストオブジェクトのテキスト用形式にエンコードします。
 --
---   [堷悢]
---     str 偵偼僄儞僐乕僪偟偨偄暥帤楍傪 UTF-8 偱搉偟傑偡丅
+--   [引数]
+--     str にはエンコードしたい文字列を UTF-8 で渡します。
 --
---   [栠傝抣]
---     encstr 偵偼
+--   [戻り値]
+--     encstr には
 --     "533093306b3061306f30164e4c750000..."
---     偺傛偆側暥帤楍傪曉偟傑偡丅
+--     のような文字列を返します。
 --
 -- decstr = GCMZDrops.decodeexotextutf8(str)
 --
---   AviUtl 偺 exo 僼傽僀儖傗 exa 僼傽僀儖偱巊傢傟傞
---   僥僉僗僩僆僽僕僃僋僩偺僥僉僗僩梡宍幃傪 UTF-8 暥帤楍偵僨僐乕僪偟傑偡丅
+--   AviUtl の exo ファイルや exa ファイルで使われる
+--   テキストオブジェクトのテキスト用形式を UTF-8 文字列にデコードします。
 --
---   [堷悢]
---     str 偵偼
+--   [引数]
+--     str には
 --     "533093306b3061306f30164e4c750000..."
---     偺傛偆側暥帤楍傪搉偟傑偡丅
+--     のような文字列を渡します。
 --
---   [栠傝抣]
---     decstr 偵偼僨僐乕僪偝傟偨 UTF-8 暥帤楍傪曉偟傑偡丅
+--   [戻り値]
+--     decstr にはデコードされた UTF-8 文字列を返します。
 --
 -- encstr = GCMZDrops.encodeluastring(str)
 --
---   暥帤楍傪 Lua 忋偱偺暥帤楍儕僥儔儖偵曄姺偟傑偡丅
+--   文字列を Lua 上での文字列リテラルに変換します。
 --
---   [堷悢]
---     str 偵偼僄儞僐乕僪偟偨偄暥帤楍傪搉偟傑偡丅
+--   [引数]
+--     str にはエンコードしたい文字列を渡します。
 --
---   [栠傝抣]
---     encstr 偵偼
+--   [戻り値]
+--     encstr には
 --     '"C:\\Your\\File.png"'
---     偺傛偆偵摿掕偺暥帤偑僄僗働乕僾偝傟
---     慡懱偑僟僽儖僋僅乕僩偱妵傜傟偨暥帤楍傪曉偟傑偡丅
+--     のように特定の文字がエスケープされ
+--     全体がダブルクォートで括られた文字列を返します。
 --
 -- enc = GCMZDrops.detectencoding(str)
 --
---   str 偺僄儞僐乕僨傿儞僌傪悇應偟傑偡丅
---   偙偺張棟偼妋幚偵惓妋側抣傪曉偡傕偺偱偼偁傝傑偣傫丅
---   "utf16le" 偲 "utf16be" 偼 BOM 偑偁傞帪偺傒曉偝傟傑偡丅
+--   str のエンコーディングを推測します。
+--   この処理は確実に正確な値を返すものではありません。
+--   "utf16le" と "utf16be" は BOM がある時のみ返されます。
 --
---   [堷悢]
---     str 偵偼僄儞僐乕僨傿儞僌傪挷傋偨偄暥帤楍傪巜掕偟傑偡丅
+--   [引数]
+--     str にはエンコーディングを調べたい文字列を指定します。
 --
---   [栠傝抣]
---     enc 偵偼埲壓偺抣偺偄偢傟偐傪曉偟傑偡丅
+--   [戻り値]
+--     enc には以下の値のいずれかを返します。
 --       "sjis" - Shift_JIS
 --       "eucjp" - EUC-JP
 --       "iso2022jp" - ISO-2022-JP
 --       "utf8" - UTF-8
 --       "utf16le" - UTF-16LE
 --       "utf16be" - UTF-16BE
---       "" - 僶僀僫儕僨乕僞丄悇應晄柧側偳
+--       "" - バイナリデータ、推測不明など
 --
 -- converted = GCMZDrops.convertencoding(str, from, to)
 --
---   str 偺僄儞僐乕僨傿儞僌傪 from 偐傜 to 偵曄姺偟偰曉偟傑偡丅
+--   str のエンコーディングを from から to に変換して返します。
 --
---   [堷悢]
---     str 偵偼僄儞僐乕僨傿儞僌傪曄姺偟偨偄暥帤楍傪巜掕偟傑偡丅
---     from 偵偼 str 偺尰嵼偺僄儞僐乕僨傿儞僌傪 "sjis" 側偳偺暥帤楍偐僐乕僪儁乕僕偱巜掕偟傑偡丅
---     to 偵偼 str 偺曄姺愭偺僄儞僐乕僨傿儞僌傪 "sjis" 側偳偺暥帤楍偐僐乕僪儁乕僕偱巜掕偟傑偡丅
---     from 偑 utf8 / utf16le / utf16be 偺偲偒偵 BOM 偑偁傞応崌偼帺摦揑偵彍嫀偝傟傑偡丅
+--   [引数]
+--     str にはエンコーディングを変換したい文字列を指定します。
+--     from には str の現在のエンコーディングを "sjis" などの文字列かコードページで指定します。
+--     to には str の変換先のエンコーディングを "sjis" などの文字列かコードページで指定します。
+--     from が utf8 / utf16le / utf16be のときに BOM がある場合は自動的に除去されます。
 --
---   [栠傝抣]
---     converted 偵偼僄儞僐乕僨傿儞僌曄姺屻偺暥帤楍傪曉偟傑偡丅
+--   [戻り値]
+--     converted にはエンコーディング変換後の文字列を返します。
 --
 -- r, v = GCMZDrops.prompt(caption, value)
 --
---   擖椡梡偺僟僀傾儘僌傪弌偟偰儐乕僓乕偵擖椡傪梫媮偟傑偡丅
+--   入力用のダイアログを出してユーザーに入力を要求します。
 --
---   [堷悢]
---     caption 偵偼壗傪擖椡偡傞偨傔偺擖椡棑側偺偐傪暥帤楍偱巜掕偟傑偡丅
---     value 偵偼擖椡棑偵僨僼僅儖僩偱擖椡偟偰偍偔撪梕傪暥帤楍偱巜掕偟傑偡丅
+--   [引数]
+--     caption には何を入力するための入力欄なのかを文字列で指定します。
+--     value には入力欄にデフォルトで入力しておく内容を文字列で指定します。
 --
---   [栠傝抣]
---     r 偵偼 OK 偑墴偝傟偨偐偳偆偐傪曉偟傑偡丅
---     v 偵偼擖椡偝傟偨撪梕傪暥帤楍偱曉偟傑偡丅
+--   [戻り値]
+--     r には OK が押されたかどうかを返します。
+--     v には入力された内容を文字列で返します。
 --
 -- r = GCMZDrops.confirm(caption)
 --
---   妋擣梡偺僟僀傾儘僌傪弌偟偰丄儐乕僓乕偵 OK 偲僉儍儞僙儖偺敾抐傪梫媮偟傑偡丅
+--   確認用のダイアログを出して、ユーザーに OK とキャンセルの判断を要求します。
 --
---   [堷悢]
---     caption 偵偼儐乕僓乕偵栤偄偐偗傞撪梕傪暥帤楍偱巜掕偟傑偡丅
+--   [引数]
+--     caption にはユーザーに問いかける内容を文字列で指定します。
 --
---   [栠傝抣]
---     r 偵偼 OK 偑墴偝傟偨偐偳偆偐傪曉偟傑偡丅
+--   [戻り値]
+--     r には OK が押されたかどうかを返します。
 --
 -- ini = GCMZDrops.inistring(str)
 --
---   str 傪 INI 僼傽僀儖偲偟偰夝愅偟丄曇廤梡僆僽僕僃僋僩傪曉偟傑偡丅
---   AviUtl 偵偍偄偰偼 *.exo 傗 *.exa 傪撉傒崬傫偩傝彂偒姺偊偨傝偡傞応崌偵桳梡偱偡丅
---   INI 僼傽僀儖偵偮偄偰偼 Wikipedia 摍傪嶲徠偟偰偔偩偝偄丅
+--   str を INI ファイルとして解析し、編集用オブジェクトを返します。
+--   AviUtl においては *.exo や *.exa を読み込んだり書き換えたりする場合に有用です。
+--   INI ファイルについては Wikipedia 等を参照してください。
 --
---   [堷悢]
---     str 偵偼 INI 僼傽僀儖偺撪梕偑奿擺偝傟偨暥帤楍傪搉偟傑偡丅
+--   [引数]
+--     str には INI ファイルの内容が格納された文字列を渡します。
 --
---   [栠傝抣]
---     ini 偵偼曇廤梡僆僽僕僃僋僩傪曉偟傑偡丅
+--   [戻り値]
+--     ini には編集用オブジェクトを返します。
 --
---   [曇廤梡僆僽僕僃僋僩偺巊偄曽]
---     曇廤梡僆僽僕僃僋僩偱偼埲壓偺儊僜僢僪偑巊梡壜擻偱偡丅
+--   [編集用オブジェクトの使い方]
+--     編集用オブジェクトでは以下のメソッドが使用可能です。
 --
---     v = ini:get("僙僋僔儑儞", "僉乕", "僨僼僅儖僩抣")
+--     v = ini:get("セクション", "キー", "デフォルト値")
 --
---       僙僋僔儑儞偲僉乕偵懳墳偟偨抣傪曉偟傑偡丅
---       僨乕僞偑尒偮偐傜側偐偭偨応崌偼 "僨僼僅儖僩抣" 傪曉偟傑偡丅
+--       セクションとキーに対応した値を返します。
+--       データが見つからなかった場合は "デフォルト値" を返します。
 --
---     ini:set("僙僋僔儑儞", "僉乕", "抣")
+--     ini:set("セクション", "キー", "値")
 --
---       怴偟偔抣傪僙僢僩偟傑偡丅
---       僙僋僔儑儞偲僉乕偵懳墳偡傞抣偑婛偵懚嵼偡傞応崌偼忋彂偒偝傟傑偡丅
+--       新しく値をセットします。
+--       セクションとキーに対応する値が既に存在する場合は上書きされます。
 --
---     ini:delete("僙僋僔儑儞", "僉乕")
+--     ini:delete("セクション", "キー")
 --
---       僙僋僔儑儞偲僉乕偵懳墳偟偨抣傪嶍彍偟傑偡丅
+--       セクションとキーに対応した値を削除します。
 --
---     ini:deletesection("僙僋僔儑儞")
+--     ini:deletesection("セクション")
 --
---       巜掕偝傟偨僙僋僔儑儞傪娵偛偲嶍彍偟傑偡丅
+--       指定されたセクションを丸ごと削除します。
 --
 --     arr = ini:sections()
 --
---       INI 僼傽僀儖偵懚嵼偡傞慡偰偺僙僋僔儑儞傪攝楍偱曉偟傑偡丅
+--       INI ファイルに存在する全てのセクションを配列で返します。
 --
---     arr = ini:keys("僙僋僔儑儞")
+--     arr = ini:keys("セクション")
 --
---       僙僋僔儑儞偵懚嵼偡傞慡偰偺僉乕傪攝楍偱曉偟傑偡丅
+--       セクションに存在する全てのキーを配列で返します。
 --
---     found = ini:exists("僙僋僔儑儞", "僉乕")
+--     found = ini:exists("セクション", "キー")
 --
---       巜掕偝傟偨僙僋僔儑儞偺僉乕偑懚嵼偡傞偐偳偆偐傪恀婾抣偱曉偟傑偡丅
+--       指定されたセクションのキーが存在するかどうかを真偽値で返します。
 --
---     found = ini:sectionexists("僙僋僔儑儞")
+--     found = ini:sectionexists("セクション")
 --
---       巜掕偝傟偨僙僋僔儑儞偑懚嵼偡傞偐偳偆偐傪恀婾抣偱曉偟傑偡丅
+--       指定されたセクションが存在するかどうかを真偽値で返します。
 --
 --     tostring(ini)
 --
---       撪梕傪 INI 僼傽僀儖偲偟偰暥帤楍偱曉偟傑偡丅
+--       内容を INI ファイルとして文字列で返します。
 --
 -- ini = GCMZDrops.inifile(filepath)
 --
---   GCMZDrops.inistring 偲傎傏摨偠偱偡偑丄暥帤楍偺戙傢傝偵僼傽僀儖傪撉傒崬傒傑偡丅
+--   GCMZDrops.inistring とほぼ同じですが、文字列の代わりにファイルを読み込みます。
 --
---   [堷悢]
---     str 偵偼 INI 僼傽僀儖傊偺僷僗傪暥帤楍偱搉偟傑偡丅
+--   [引数]
+--     str には INI ファイルへのパスを文字列で渡します。
 --
---   [栠傝抣]
---     ini 偵偼曇廤梡僆僽僕僃僋僩傪曉偟傑偡丅
---     巊偄曽偵偮偄偰偼 GCMZDrops.inistring 偺愢柧傪嶲徠偟偰偔偩偝偄丅
+--   [戻り値]
+--     ini には編集用オブジェクトを返します。
+--     使い方については GCMZDrops.inistring の説明を参照してください。
 --
 -- processed = GCMZDrops.drop(files, state)
 --
---   奼挘曇廤僂傿儞僪僂偵岦偗偰丄巜掕偝傟偨僨乕僞傪僪儘僢僾偟傑偡丅
---   捠忢偺梡搑偱偼偙偺張棟傪捈愙屇傃弌偡昁梫偼偁傝傑偣傫丅
+--   拡張編集ウィンドウに向けて、指定されたデータをドロップします。
+--   通常の用途ではこの処理を直接呼び出す必要はありません。
 --
---   [堷悢]
---     files 偵偼埲壓偺傛偆側攝楍乮僥乕僽儖乯傪巜掕偟傑偡丅
+--   [引数]
+--     files には以下のような配列（テーブル）を指定します。
 --       files = {
 --         {filepath="C:\Your\File.png"},
 --         {filepath="C:\Your\File2.png"},
 --         ...
 --       }
---       [曗懌忣曬]
---         files 偵偼攝楍乮僥乕僽儖乯偱暋悢偺僼傽僀儖傪巜掕偱偒傑偡偑丄
---         侾偮偺僼傽僀儖偵傛傝僞僀儉儔僀儞忋偵暋悢偺傾僀僥儉偑捛壛偝傟傞応崌丄
---         偦偺僼傽僀儖埲崀偼惓偟偔側偄埵抲偵僪儘僢僾偝傟傞偙偲偑偁傝傑偡丅
---         乮椺偊偽 *.exo 傗摦夋傪僪儘僢僾偟偨応崌偵敪惗偟傑偡乯
+--       [補足情報]
+--         files には配列（テーブル）で複数のファイルを指定できますが、
+--         １つのファイルによりタイムライン上に複数のアイテムが追加される場合、
+--         そのファイル以降は正しくない位置にドロップされることがあります。
+--         （例えば *.exo や動画をドロップした場合に発生します）
 --
---     state 偵偼埲壓偺傛偆側僥乕僽儖傪搉偟傑偡丅
+--     state には以下のようなテーブルを渡します。
 --       state = {
---         -- 僼傽僀儖傪僪儘僢僾偡傞儅僂僗僇乕僜儖埵抲
+--         -- ファイルをドロップするマウスカーソル位置
 --         x=120,
 --         y=235
 --       }
 --
---   [栠傝抣]
---     processed 偼僪儘僢僾張棟偑幚嵺偵峴傢傟偨偐偳偆偐傪曉偟傑偡丅
---     儐乕僓乕偵傛偭偰僉儍儞僙儖偝傟傞側偳丄壗傜偐偺尨場偱拞抐偝傟傞偙偲傕偁傝傑偡丅
+--   [戻り値]
+--     processed はドロップ処理が実際に行われたかどうかを返します。
+--     ユーザーによってキャンセルされるなど、何らかの原因で中断されることもあります。
 --
 -- files = GCMZDrops.getclipboard()
 --
---   僋儕僢僾儃乕僪偵擖偭偰偄傞僨乕僞傪撉傒庢傝傑偡丅
---   撉傒庢傝儖乕儖偼僪儘僢僾偝傟偨僼傽僀儖偵懳偡傞傕偺偲摨堦偱偡丅
+--   クリップボードに入っているデータを読み取ります。
+--   読み取りルールはドロップされたファイルに対するものと同一です。
 --
---   [堷悢]
---     堷悢偼偁傝傑偣傫丅
+--   [引数]
+--     引数はありません。
 --
---   [栠傝抣]
---     files 偵偼埲壓偺傛偆側攝楍乮僥乕僽儖乯傪曉偟傑偡丅
+--   [戻り値]
+--     files には以下のような配列（テーブル）を返します。
 --       files = {
 --         {filepath="C:\Your\File.png"},
 --         {filepath="C:\Your\File2.png"},
 --         ...
 --       }
---     偨偩偟丄壗傜偐偺棟桼偱撉傒庢傝帺懱偵幐攕偟偨応崌偼 nil 傪曉偟傑偡丅
+--     ただし、何らかの理由で読み取り自体に失敗した場合は nil を返します。
 --
 -- GCMZDrops.deleteonfinish(file)
 --
---   僪儔僢僌仌僪儘僢僾張棟偑姰椆偟偨帪偵嶍彍偡傋偒僼傽僀儖傪搊榐偟傑偡丅
---   捠忢偺梡搑偱偼偙偺張棟傪屇傃弌偡昁梫偼偁傝傑偣傫丅
+--   ドラッグ＆ドロップ処理が完了した時に削除すべきファイルを登録します。
+--   通常の用途ではこの処理を呼び出す必要はありません。
 --
---   [堷悢]
---     file 偵偼僪儔僢僌仌僪儘僢僾偺姰椆帪偵嶍彍偟偨偄僼傽僀儖柤傪巜掕偟傑偡丅
+--   [引数]
+--     file にはドラッグ＆ドロップの完了時に削除したいファイル名を指定します。
 --
---   [栠傝抣]
---     栠傝抣偼偁傝傑偣傫丅
+--   [戻り値]
+--     戻り値はありません。
 --
 -- GCMZDrops.deleteonabort(file)
 --
---   張棟拞偵僗僋儕僾僩僄儔乕偑敪惗偟偨帪丄
---   偍傛傃僪儘僢僾偑僉儍儞僙儖偝傟偨帪偵嶍彍偡傋偒僼傽僀儖傪搊榐偟傑偡丅
---   捠忢偺梡搑偱偼偙偺張棟傪屇傃弌偡昁梫偼偁傝傑偣傫丅
+--   処理中にスクリプトエラーが発生した時、
+--   およびドロップがキャンセルされた時に削除すべきファイルを登録します。
+--   通常の用途ではこの処理を呼び出す必要はありません。
 --
---   [堷悢]
---     file 偵偼僄儔乕傗僉儍儞僙儖帪偵嶍彍偟偨偄僼傽僀儖柤傪巜掕偟傑偡丅
+--   [引数]
+--     file にはエラーやキャンセル時に削除したいファイル名を指定します。
 --
---   [栠傝抣]
---     栠傝抣偼偁傝傑偣傫丅
+--   [戻り値]
+--     戻り値はありません。
 --
 -- GCMZDrops.doevents(msgMin, msgMax)
 --
---   幚峴偑挿帪娫偵搉傞僗僋儕僾僩傪幚峴偡傞嵺偵丄
---   掕婜揑偵 GCMZDrops.doevents(0, 0) 傪屇傃弌偡偲
---   AviUtl 偑乽墳摎側偟乿偵側傞偺傪夞旔偡傞偙偲偑偱偒傑偡丅
+--   実行が長時間に渡るスクリプトを実行する際に、
+--   定期的に GCMZDrops.doevents(0, 0) を呼び出すと
+--   AviUtl が「応答なし」になるのを回避することができます。
 --
---   [堷悢]
---     msgMin, msgMax 偵偼堦斒揑側梡搑偱偼 0 傪搉偟偰偔偩偝偄丅
+--   [引数]
+--     msgMin, msgMax には一般的な用途では 0 を渡してください。
 --
---   [栠傝抣]
---     栠傝抣偼偁傝傑偣傫丅
+--   [戻り値]
+--     戻り値はありません。
 --
 
 return P

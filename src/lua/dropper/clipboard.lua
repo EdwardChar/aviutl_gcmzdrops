@@ -1,9 +1,9 @@
 local P = {}
 
-P.name = "ƒNƒŠƒbƒvƒ{[ƒh‚©‚ç“\\‚è•t‚¯"
+P.name = "´Ó¼ôÌù°åÕ³Ìù"
 
 function P.oninitmenu()
-  return "ƒNƒŠƒbƒvƒ{[ƒh‚©‚ç“\\‚è•t‚¯"
+  return "´Ó¼ôÌù°åÕ³\Ìù"
 end
 
 function P.onselect(index, state)

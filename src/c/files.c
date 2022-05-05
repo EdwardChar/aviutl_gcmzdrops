@@ -59,9 +59,9 @@ static void tempfilelist_add(struct wstr const *const path, int const mode) {
 failed:
   ereport(sfree(&p));
   friendly_report(err,
-                  NSTR("一時ファイル \""),
+                  NSTR("临时文件 \""),
                   path->ptr,
-                  NSTR("\" を削除候補に登録できませんでした。ファイルは自動で削除されません。"));
+                  NSTR("\" 无法注册为删除候选。该文件不会自动删除。"));
 }
 
 static void tempfilelist_cleanup(bool const failed) {
@@ -70,7 +70,7 @@ static void tempfilelist_cleanup(bool const failed) {
     if (file->mode == tempfile_mode_delete_always || (file->mode == tempfile_mode_delete_on_failure && failed)) {
       error err = delete_file(&file->path);
       if (efailed(err)) {
-        friendly_report(err, NSTR("一時ファイル \""), file->path.ptr, NSTR("\" の削除に失敗しました。"));
+        friendly_report(err, NSTR("临时文件 \""), file->path.ptr, NSTR("\" 删除失败。"));
       }
     }
     ereport(sfree(&file->path));

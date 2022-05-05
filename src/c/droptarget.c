@@ -670,7 +670,7 @@ DragEnter(IDropTarget *This, IDataObject *pDataObj, DWORD grfKeyState, POINTL pt
   }
   if (!this->dragging_files.len) {
     err = emsg(
-        err_type_generic, err_abort, &native_unmanaged(NSTR("ドロップすべきファイルがないため処理を中断しました。")));
+        err_type_generic, err_abort, &native_unmanaged(NSTR("无所需删除的文件，处理被中断。")));
     goto cleanup;
   }
 
@@ -679,7 +679,7 @@ DragEnter(IDropTarget *This, IDataObject *pDataObj, DWORD grfKeyState, POINTL pt
 
 cleanup:
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("IDropTarget::DragEnter でエラーが発生しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("IDropTarget::DragEnter 出错。")));
     *pdwEffect = DROPEFFECT_NONE;
   }
   if (*pdwEffect == DROPEFFECT_NONE) {
@@ -761,7 +761,7 @@ Drop(IDropTarget *This, IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWO
   }
   if (!this->dragging_files.len) {
     err = emsg(
-        err_type_generic, err_abort, &native_unmanaged(NSTR("ドロップすべきファイルがないため処理を中断しました。")));
+        err_type_generic, err_abort, &native_unmanaged(NSTR("无所需删除的文件，处理被中断。")));
     goto cleanup;
   }
 
@@ -771,7 +771,7 @@ Drop(IDropTarget *This, IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWO
 
 cleanup:
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("IDropTarget::Drop でエラーが発生しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("IDropTarget::Drop 出错。")));
   }
   ereport(files_free(&this->dragging_files, false));
   return S_OK;

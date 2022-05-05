@@ -102,7 +102,7 @@ NODISCARD static error parse_api0(struct wstr *const ws, struct api_request_para
       continue;
     }
     if (token == 0) {
-      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("無効なフォーマットです。")));
+      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("无效的格式。")));
       goto cleanup;
     }
     err =
@@ -132,7 +132,7 @@ NODISCARD static error parse_api1(struct str *const s, struct api_request_params
   struct wstr tmp = {0};
   json_t *root = json_loadb(s->ptr, s->len, 0, NULL);
   if (!json_is_object(root)) {
-    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("JSON としての読み込みに失敗しました。")));
+    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("无法读取为 JSON。")));
     goto cleanup;
   }
 
@@ -141,7 +141,7 @@ NODISCARD static error parse_api1(struct str *const s, struct api_request_params
 
   json_t *v = json_object_get(root, "layer");
   if (!json_is_number(v)) {
-    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("layer の指定が正しくありません。")));
+    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("图层指定不正确。")));
     goto cleanup;
   }
   layer = json_integer_value(v);
@@ -153,13 +153,13 @@ NODISCARD static error parse_api1(struct str *const s, struct api_request_params
 
   v = json_object_get(root, "files");
   if (!json_is_array(v)) {
-    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("files の指定が正しくありません。")));
+    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("文件指定不正确。")));
     goto cleanup;
   }
   for (size_t i = 0, len = json_array_size(v); i < len; ++i) {
     json_t *item = json_array_get(v, i);
     if (!json_is_string(item)) {
-      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("ファイル名が正しくありません。")));
+      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("文件名不正确。")));
       goto cleanup;
     }
     err = from_utf8(&str_unmanaged_const(json_string_value(item)), &tmp);
@@ -246,12 +246,12 @@ static BOOL process(struct api *const api, HWND const sender, COPYDATASTRUCT *co
     }
     break;
   default:
-    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("未知の API バージョンです。")));
+    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("未知的API版本。")));
     goto cleanup;
   }
 
   if (d.pi.params.layer == 0 || d.pi.params.layer < -100 || d.pi.params.layer > 100) {
-    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("レイヤー番号が不正です。")));
+    err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("图层序号不正确。")));
     goto cleanup;
   }
   cndvar_lock(&api->process);
@@ -340,7 +340,7 @@ static int api_thread(void *const userdata) {
   return 0;
 
 failed:
-  ereportmsg(err, &native_unmanaged(NSTR("API 用スレッドでエラーが発生しました。")));
+  ereportmsg(err, &native_unmanaged(NSTR("API所用线程出错。")));
   cndvar_lock(&api->state);
   cndvar_signal(&api->state, state_failed);
   cndvar_unlock(&api->state);
@@ -575,7 +575,7 @@ cleanup:
 }
 
 error api_exit(struct api **const api) {
-  ereportmsg(api_thread_exit(*api), &native_unmanaged(NSTR("API 用スレッドの終了に失敗しました。")));
+  ereportmsg(api_thread_exit(*api), &native_unmanaged(NSTR("API所用线程无法终止。")));
   if ((*api)->mutex) {
     CloseHandle((*api)->mutex);
     (*api)->mutex = NULL;

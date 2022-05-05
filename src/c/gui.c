@@ -112,7 +112,7 @@ error gui_init(HWND const window) {
   int font_height = 0;
   error err = create_font(window, &font, &font_height);
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("フォントの作成に失敗しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("字体创建失败了。")));
     font_height = 18;
   }
 
@@ -129,7 +129,7 @@ error gui_init(HWND const window) {
   {
     HWND h = CreateWindowExW(0,
                              L"STATIC",
-                             L"処理モード:",
+                             L"处理模式:",
                              WS_CHILD | WS_VISIBLE | ES_LEFT,
                              padding,
                              save_mode_height,
@@ -155,9 +155,9 @@ error gui_init(HWND const window) {
                         (HMENU)1,
                         hinst,
                         NULL);
-    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"自動判定");
-    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"コピーを作成");
-    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"直接読み込み");
+    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"自动判断");
+    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"创建复制");
+    SendMessageW(h, CB_ADDSTRING, 0, (LPARAM)L"直接读取");
     SendMessageW(h, WM_SETFONT, (WPARAM)font, 0);
     save_mode_height += control_height;
     g_save_mode = h;
@@ -168,7 +168,7 @@ error gui_init(HWND const window) {
     int const button_width = font_height * 2;
     HWND h = CreateWindowExW(0,
                              L"STATIC",
-                             L"データ保存先:",
+                             L"数据保存目录:",
                              WS_CHILD | WS_VISIBLE | ES_LEFT,
                              padding + save_mode_width + padding,
                              save_dir_height,
@@ -220,7 +220,7 @@ error gui_init(HWND const window) {
     };
     HWND h = CreateWindowExW(0,
                              L"BUTTON",
-                             L"初期設定に戻す",
+                             L"返回初始设定",
                              WS_CHILD | WS_TABSTOP | WS_VISIBLE | BS_CENTER | BS_VCENTER,
                              padding,
                              y,
@@ -234,7 +234,7 @@ error gui_init(HWND const window) {
     g_restore_initial = h;
     h = CreateWindowExW(0,
                         L"BUTTON",
-                        L"デフォルトに戻す",
+                        L"返回默认值",
                         WS_CHILD | WS_TABSTOP | WS_VISIBLE | BS_CENTER | BS_VCENTER,
                         padding + button_width,
                         y,
@@ -248,7 +248,7 @@ error gui_init(HWND const window) {
     g_restore_default = h;
     h = CreateWindowExW(0,
                         L"BUTTON",
-                        L"現在の設定をデフォルトにする",
+                        L"将当前设定设为默认",
                         WS_CHILD | WS_TABSTOP | WS_VISIBLE | BS_CENTER | BS_VCENTER,
                         padding + button_width + button_width,
                         y,
@@ -376,7 +376,7 @@ NODISCARD static error click_select_folder_button(HWND const window) {
     }
   }
   bool ret = false;
-  err = select_directory(window, &wstr_unmanaged(L"データ保存先の選択"), &dir, &ret);
+  err = select_directory(window, &wstr_unmanaged(L"选择数据保存目标"), &dir, &ret);
   if (efailed(err)) {
     err = ethru(err);
     goto cleanup;

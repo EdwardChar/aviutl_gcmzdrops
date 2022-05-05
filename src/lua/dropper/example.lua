@@ -1,64 +1,64 @@
--- 偛偪傖傑偤僪儘僢僾僗梡僪儘僢僷乕僗僋儕僾僩偺婰弎僒儞僾儖
--- 暥帤僐乕僪偼 Shift_JIS 偱婰弎偟偰偔偩偝偄
--- 乮仸偨偩偟丄偄傢備傞乽僟儊暥帤乿懳嶔偼摿偵偟偰偄傑偣傫乯
+-- ごちゃまぜドロップス用ドロッパースクリプトの記述サンプル
+-- 文字コードは Shift_JIS で記述してください
+-- （※ただし、いわゆる「ダメ文字」対策は特にしていません）
 local P = {}
 
--- 偙偺僪儘僢僷乕偺柤慜傪巜掕偟傑偡丅
--- 偙偺柤慜偼儊僯儏乕傾僀僥儉柤偲偟偰棙梡偝傟傑偡丅
-P.name = "僒儞僾儖僪儘僢僷乕"
+-- このドロッパーの名前を指定します。
+-- この名前はメニューアイテム名として利用されます。
+P.name = "样品拖放器"
 
--- oninitmenu 偼儊僯儏乕崁栚傪弨旛偡傞偨傔偵屇偽傟傑偡丅
+-- oninitmenu はメニュー項目を準備するために呼ばれます。
 function P.oninitmenu()
-  -- 儊僯儏乕偲偟偰昞帵偡傋偒崁栚柤傪暥帤楍偐丄暥帤楍偺攝楍乮僥乕僽儖乯偲偟偰曉偟偰偔偩偝偄丅
-  -- nil 傪曉偟偨応崌偼儊僯儏乕崁栚偼昞帵偝傟偢丄張棟偑屇傃弌偝傟傞偙偲傕偁傝傑偣傫丅
-  -- 暥帤楍傪曉偟偨応崌偼儊僯儏乕崁栚偼侾偮偺傒偱丄偦傟偑僋儕僢僋偝傟傞偲屇傃弌偝傟傑偡丅
-  -- 暥帤楍偺攝楍乮僥乕僽儖乯傪曉偟偨応崌偼僒僽儊僯儏乕偲偟偰搊榐偝傟傑偡丅
-  -- 偙偺僀儀儞僩偼億僢僾傾僢僾儊僯儏乕昞帵偺搙偵屇傃弌偝傟傞偨傔丄晧壸偺崅偄張棟傪峴偆傋偒偱偼偁傝傑偣傫丅
+  -- メニューとして表示すべき項目名を文字列か、文字列の配列（テーブル）として返してください。
+  -- nil を返した場合はメニュー項目は表示されず、処理が呼び出されることもありません。
+  -- 文字列を返した場合はメニュー項目は１つのみで、それがクリックされると呼び出されます。
+  -- 文字列の配列（テーブル）を返した場合はサブメニューとして登録されます。
+  -- このイベントはポップアップメニュー表示の度に呼び出されるため、負荷の高い処理を行うべきではありません。
   return nil
 end
 
--- onselect 偼儊僯儏乕崁栚偑慖偽傟偨帪偵屇偽傟傑偡丅
+-- onselect はメニュー項目が選ばれた時に呼ばれます。
 function P.onselect(index, state)
-  -- index 偵偼慖偽傟偨儊僯儏乕崁栚偺埵抲偑惍悢抣偱搉偝傟傑偡丅
-  --   僒僽儊僯儏乕傪帩偨側偄帪偼忢偵0丄僒僽儊僯儏乕傪帩偮応崌偼1偐傜巒傑傞僀儞僨僢僋僗偱偡丅
-  -- state 偵偼埲壓偺傛偆側僥乕僽儖傪搉偝傟傑偡丅
+  -- index には選ばれたメニュー項目の位置が整数値で渡されます。
+  --   サブメニューを持たない時は常に0、サブメニューを持つ場合は1から始まるインデックスです。
+  -- state には以下のようなテーブルを渡されます。
   --   state = {
-  --     -- 僼傽僀儖傪僪儘僢僾偡傋偒儅僂僗僇乕僜儖埵抲
+  --     -- ファイルをドロップすべきマウスカーソル位置
   --     x=120,
   --     y=235,
-  --     -- 恊偵側傞傋偒僂傿儞僪僂偺僴儞僪儖
+  --     -- 親になるべきウィンドウのハンドル
   --     parent=123456
   --   }
 
-  -- 張棟傪峴偭偨寢壥丄僪儘僢僾偡傞僼傽僀儖偑壗傕側偄応崌偼 nil 傪曉偟偰偔偩偝偄丅
+  -- 処理を行った結果、ドロップするファイルが何もない場合は nil を返してください。
   return nil
 
-  -- 僼傽僀儖傪僪儘僢僾偡傞応崌偼僼傽僀儖堦棗偲儅僂僗側偳偺擖椡忬懺傪曉偡昁梫偑偁傝傑偡丅
-  -- 僀儀儞僩僴儞僪儔乕僗僋儕僾僩偱 ondragenter 偵搉偝傟偰偔傞
-  -- files 偲 state 偲摨偠傕偺傪僗僋儕僾僩撪偱嶌惉偟丄椉曽傪曉偟偰偔偩偝偄丅
+  -- ファイルをドロップする場合はファイル一覧とマウスなどの入力状態を返す必要があります。
+  -- イベントハンドラースクリプトで ondragenter に渡されてくる
+  -- files と state と同じものをスクリプト内で作成し、両方を返してください。
   -- return files, state
   -- 
-  -- 堦帪揑側僼傽僀儖傪嶌惉偟偨偄応崌偼 GCMZDrops.createtempfile 偱嶌惉偡傞偐丄
-  -- 暿偺庤抜偱嶌惉偟偨僼傽僀儖傪 GCMZDrops.deleteonfinish 偱嶍彍梊栺偟偰偔偩偝偄丅
-  -- 傑偨丄堦帪揑側僼傽僀儖傪嶌惉偡傞応崌偼 Temp 僼僅儖僟乕傪巊梡偡傞偺傪嫮偔悇彠偟傑偡丅
-  -- 偦傟埲奜偺応強偩偲儐乕僓乕偺愝掕師戞偱僐僺乕偝傟傞偐偳偆偐偺怳傞晳偄偑曄傢傝傑偡丅
-  -- 堦曽丄張棟拞偵嶌惉偡傞堦帪揑偱偼側偄僼傽僀儖偼
-  -- 慡偰儐乕僓乕偑愝掕偟偨僼僅儖僟撪偵偍偝傑傞傛偆偵攝抲偡傞偺偑朷傑偟偄偱偡丅
-  -- 偦傟埲奜偺応強偵塱懕揑側僼傽僀儖傪嶌惉偡傞僗僋儕僾僩傪嶌惉偡傞応崌偼
-  -- 儐乕僓乕偵僐儞僙儞僒僗傪摼偨忋偱乮仸乯峴偆傛偆偵偟偰偔偩偝偄丅
-  -- 仸僪僉儏儊儞僩側偳偵婰嵹偡傞丄GCMZDrops.confirm 偱妋擣偡傞丄側偳
+  -- 一時的なファイルを作成したい場合は GCMZDrops.createtempfile で作成するか、
+  -- 別の手段で作成したファイルを GCMZDrops.deleteonfinish で削除予約してください。
+  -- また、一時的なファイルを作成する場合は Temp フォルダーを使用するのを強く推奨します。
+  -- それ以外の場所だとユーザーの設定次第でコピーされるかどうかの振る舞いが変わります。
+  -- 一方、処理中に作成する一時的ではないファイルは
+  -- 全てユーザーが設定したフォルダ内におさまるように配置するのが望ましいです。
+  -- それ以外の場所に永続的なファイルを作成するスクリプトを作成する場合は
+  -- ユーザーにコンセンサスを得た上で（※）行うようにしてください。
+  -- ※ドキュメントなどに記載する、GCMZDrops.confirm で確認する、など
   --
-  -- onselect 幚憰帪偺拲堄揰
-  --   僗僋儕僾僩偺張棟偑挿帪娫偵搉傞応崌丄偦偺傑傑慺捈偵僗僋儕僾僩傪幚憰偡傞偲
-  --   儊僢僙乕僕儖乕僾偑夞傜側偄偺偑尨場偱 AviUtl 慡懱偑僼儕乕僘偟傑偡丅
-  --   Lua 僗僋儕僾僩偱夞悢偺懡偄儖乕僾張棟傪峴偭偰偄傞偺偑尨場偺応崌偼
-  --   GCMZDrops.doevents(0, 0) 傪偨傑偵屇傇偙偲偱夞旔壜擻偱偡偑丄
-  --   os.execute 傪屇傃弌偟偨応崌側偳偺傛偆偵張棟偵夘擖偱偒側偄応崌偼
-  --   Lua 僗僋儕僾僩偩偗偱偼栤戣傪夞旔偡傞偙偲偑偱偒傑偣傫丅
-  --   偙偺応崌偼 Lua 梡偺 DLL 傪暿搑嶌惉偡傞偙偲偱夞旔偱偒傑偡丅
+  -- onselect 実装時の注意点
+  --   スクリプトの処理が長時間に渡る場合、そのまま素直にスクリプトを実装すると
+  --   メッセージループが回らないのが原因で AviUtl 全体がフリーズします。
+  --   Lua スクリプトで回数の多いループ処理を行っているのが原因の場合は
+  --   GCMZDrops.doevents(0, 0) をたまに呼ぶことで回避可能ですが、
+  --   os.execute を呼び出した場合などのように処理に介入できない場合は
+  --   Lua スクリプトだけでは問題を回避することができません。
+  --   この場合は Lua 用の DLL を別途作成することで回避できます。
 
-  -- -- 幚憰椺
-  -- -- "Hello world!" 偲彂偐傟偨僥僉僗僩僼傽僀儖傪嶌惉偟丄奼挘曇廤偵搳偘崬傓椺
+  -- -- 実装例
+  -- -- "Hello world!" と書かれたテキストファイルを作成し、拡張編集に投げ込む例
   -- local filepath = GCMZDrops.createtempfile("helloworld", ".txt")
   -- f, err = io.open(filepath, "wb")
   -- if f == nil then

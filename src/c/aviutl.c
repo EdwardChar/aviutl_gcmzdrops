@@ -52,7 +52,7 @@ cleanup:
 }
 
 NODISCARD static error find_exedit_filter(FILTER const **const exedit_fp, bool *const is_enpatched) {
-  static TCHAR const exedit_name_mbcs[] = "\x8a\x67\x92\xa3\x95\xd2\x8f\x57"; // "拡張編集"
+  static TCHAR const exedit_name_mbcs[] = "\xE6\x89\xA9\xE5\xB1\x95\xE7\xBC\x96\xE8\xBE\x91"; // "拡張編集"
   static TCHAR const enpatched_exedit_name_mbcs[] = "Advanced Editing";
 
   *exedit_fp = NULL;
@@ -83,9 +83,9 @@ NODISCARD static error find_exedit_filter(FILTER const **const exedit_fp, bool *
 }
 
 NODISCARD static error find_blocked_filter(void) {
-  static TCHAR const extext_name_mbcs[] = "\x8e\x9a\x96\x8b\x83\x41\x83\x56\x83\x58\x83\x67"; // "字幕アシスト"
+  static TCHAR const extext_name_mbcs[] = "\xE5\xAD\x97\xE5\xB9\x95\xE8\xBE\x85\xE5\x8A\xA9"; // "字幕アシスト"
   static TCHAR const gcmzdrops_name_mbcs[] =
-      "\x82\xB2\x82\xBF\x82\xE1\x82\xDC\x82\xBA\x83\x68\x83\x8D\x83\x62\x83\x76\x83\x58"; // "ごちゃまぜドロップス"
+      "\xE9\x9A\x8F\xE6\x84\x8F\xE6\x8B\x96\xE6\x94\xBE"; // "ごちゃまぜドロップス"
   static wchar_t const gcmzdrops_old_dll_name[] = L"oledd.auf";
   SYS_INFO si = {0};
   struct wstr s = {0};
@@ -216,7 +216,7 @@ NODISCARD static error apply_window_capture_problem_workaround(FILTER const *con
   bool found_auls_transparence = false;
   {
     static TCHAR const auls_transparence_name_mbcs[] =
-        "\x8a\x67\x92\xa3\x95\xd2\x8f\x57\x82\xf0\x94\xbc\x93\xa7\x96\xbe\x89\xbb"; // 拡張編集を半透明化
+        "\xE6\x89\xA9\xE5\xB1\x95\xE7\xBC\x96\xE8\xBE\x91\xE9\x80\x8F\xE6\x98\x8E\xE5\x8C\x96"; // 拡張編集を半透明化
     SYS_INFO si = {0};
     error err = aviutl_get_sys_info(&si);
     if (efailed(err)) {
@@ -337,7 +337,7 @@ HWND aviutl_get_exedit_window_must(void) {
   HWND h = NULL;
   error err = aviutl_get_exedit_window(&h);
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("拡張編集のウィンドウハンドルが取得できませんでした。")));
+    ereportmsg(err, &native_unmanaged(NSTR("无法获取扩展编辑窗口句柄。")));
     h = GetDesktopWindow();
   }
   return h;
@@ -358,7 +358,7 @@ HWND aviutl_get_my_window_must(void) {
   HWND h = NULL;
   error err = aviutl_get_my_window(&h);
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("フィルターのウィンドウハンドルが取得できませんでした。")));
+    ereportmsg(err, &native_unmanaged(NSTR("无法获取滤镜窗口句柄。")));
     h = GetDesktopWindow();
   }
   return h;

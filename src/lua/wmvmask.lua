@@ -1,6 +1,6 @@
 local P = {}
 
-P.name = "*_mask.wmv 偑偁傞側傜儅僗僋傪捛壛"
+P.name = "为*_mask.wmv添加掩码"
 
 P.priority = 0
 
@@ -18,7 +18,7 @@ function P.ondragenter(files, state)
     local ext = v.filepath:match(".[^.]+$")
     local maskfile = v.filepath:sub(1, #v.filepath - #ext) .. "_mask" .. ext
     if ext:lower() == ".wmv" and fileexists(maskfile) then
-      -- 僼傽僀儖偺奼挘巕偑 .wmv 偺僼傽僀儖偑偁偭偰丄偐偮 *_mask.wmv 偑偁傞側傜 true
+      -- ファイルの拡張子が .wmv のファイルがあって、かつ *_mask.wmv があるなら true
       return true
     end
   end
@@ -26,7 +26,7 @@ function P.ondragenter(files, state)
 end
 
 function P.ondragover(files, state)
-  -- ondragenter 偱張棟偱偒偦偆側傕偺偼 ondragover 偱傕張棟偱偒偦偆側偺偱挷傋偢 true
+  -- ondragenter で処理できそうなものは ondragover でも処理できそうなので調べず true
   return true
 end
 
@@ -35,20 +35,20 @@ end
 
 function P.ondrop(files, state)
   for i, v in ipairs(files) do
-    -- 僼傽僀儖偺奼挘巕偑 .wmv 偺僼傽僀儖偑偁偭偰丄偐偮 *_mask.wmv 偑偁傞側傜
+    -- ファイルの拡張子が .wmv のファイルがあって、かつ *_mask.wmv があるなら
     local ext = v.filepath:match(".[^.]+$")
     local maskfile = v.filepath:sub(1, #v.filepath - #ext) .. "_mask" .. ext
     if ext:lower() == ".wmv" and fileexists(maskfile) then
-      -- 僾儘僕僃僋僩偲僼傽僀儖偺忣曬傪庢摼偡傞
+      -- プロジェクトとファイルの情報を取得する
       local proj = GCMZDrops.getexeditfileinfo()
       local ok, fi = pcall(GCMZDrops.getfileinfo, v.filepath)
       if not ok then
-        debug_print("摦夋偺撉傒崬傒偵幐攕偟傑偟偨: " .. fi)
+        debug_print("视频读取失败: " .. fi)
         return nil
       end
 
-      -- 摦夋偑尰嵼偺僾儘僕僃僋僩偱壗僼儗乕儉暘偁傞偺偐傪寁嶼偡傞
-      -- 奼挘曇廤偱偺寁嶼曽朄偲堦抳偡傞嶼弌曽朄偑傢偐偭偰側偄偺偱丄傕偟偐偟偨傜侾僼儗乕儉扨埵偱慜屻偡傞偐傕乧乧
+      -- 動画が現在のプロジェクトで何フレーム分あるのかを計算する
+      -- 拡張編集での計算方法と一致する算出方法がわかってないので、もしかしたら１フレーム単位で前後するかも……
       local len = math.floor((fi.length * fi.scale * proj.rate) / (fi.rate * proj.scale) + 0.5)
 
       local oini = GCMZDrops.inistring("")
@@ -66,32 +66,32 @@ function P.ondrop(files, state)
       oini:set("0", "overlay", 1)
       oini:set("0", "camera", 0)
 
-      oini:set("0.0", "_name", "摦夋僼傽僀儖")
-      oini:set("0.0", "嵞惗埵抲", 1)
-      oini:set("0.0", "嵞惗懍搙", "100.0")
-      oini:set("0.0", "儖乕僾嵞惗", 0)
-      oini:set("0.0", "傾儖僼傽僠儍儞僱儖傪撉傒崬傓", 0)
+      oini:set("0.0", "_name", "视频文件")
+      oini:set("0.0", "播放位置", 1)
+      oini:set("0.0", "播放速度", "100.0")
+      oini:set("0.0", "循环播放", 0)
+      oini:set("0.0", "读取Alpha通道", 0)
       oini:set("0.0", "file", v.filepath)
 
-      oini:set("0.1", "_name", "摦夋僼傽僀儖崌惉")
-      oini:set("0.1", "嵞惗埵抲", 0)
-      oini:set("0.1", "嵞惗懍搙", "100.0")
+      oini:set("0.1", "_name", "视频文件合成")
+      oini:set("0.1", "播放位置", 0)
+      oini:set("0.1", "播放速度", "100.0")
       oini:set("0.1", "X", 0)
       oini:set("0.1", "Y", 0)
-      oini:set("0.1", "奼戝棪", "100.0")
-      oini:set("0.1", "儖乕僾嵞惗", 0)
-      oini:set("0.1", "摦夋僼傽僀儖偺摨婜", 1)
-      oini:set("0.1", "儖乕僾夋憸", 0)
+      oini:set("0.1", "缩放率", "100.0")
+      oini:set("0.1", "循环播放", 0)
+      oini:set("0.1", "视频文件同步", 1)
+      oini:set("0.1", "图像拼贴", 0)
       oini:set("0.1", "file", maskfile)
       oini:set("0.1", "mode", 1)
 
-      oini:set("0.2", "_name", "昗弨昤夋")
+      oini:set("0.2", "_name", "标准属性")
       oini:set("0.2", "X", "0.0")
       oini:set("0.2", "Y", "0.0")
       oini:set("0.2", "Z", "0.0")
-      oini:set("0.2", "奼戝棪", "100.0")
-      oini:set("0.2", "摟柧搙", 0)
-      oini:set("0.2", "夞揮", "0.00")
+      oini:set("0.2", "缩放率", "100.0")
+      oini:set("0.2", "透明度", 0)
+      oini:set("0.2", "旋转", "0.00")
       oini:set("0.2", "blend", 0)
 
       local filepath = GCMZDrops.createtempfile("wmv", ".exo")
@@ -101,11 +101,11 @@ function P.ondrop(files, state)
       end
       f:write(tostring(oini))
       f:close()
-      debug_print("["..P.name.."] 偑 " .. v.filepath .. " 傪 exo 僼傽僀儖偵嵎偟懼偊傑偟偨丅尦偺僼傽僀儖偼 orgfilepath 偱庢摼偱偒傑偡丅")
+      debug_print("["..P.name.."] 将 " .. v.filepath .. " 替换为exo文件。可使用 orgfilepath 获取源文件。")
       files[i] = {filepath=filepath, orgfilepath=v.filepath}
     end
   end
-  -- 懠偺僀儀儞僩僴儞僪儔乕偵傕張棟傪偝偣偨偄偺偱偙偙偼忢偵 false
+  -- 他のイベントハンドラーにも処理をさせたいのでここは常に false
   return false
 end
 

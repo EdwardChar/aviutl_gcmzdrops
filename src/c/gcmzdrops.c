@@ -27,8 +27,8 @@ enum {
 };
 
 #define ERRMSG_UNSUPPORTED_CHAR_IN_FILENAME                                                                            \
-  L"ファイル名に使用できない文字が含まれています。\r\n"                                         \
-  L"AviUtl では絵文字など一部の文字をファイル名に使用することができません。"
+  L"文件名中包含非法字符。\r\n"                                         \
+  L"AviUtl不能将emoji等部分文字用作文件名。"
 
 static bool g_drop_target_registered = false;
 
@@ -41,7 +41,7 @@ static void update_mapped_data_task(void *const userdata) {
   if (!api_initialized(g_api)) {
     return;
   }
-  ereportmsg(api_update_mapped_data(g_api), &native_unmanaged(NSTR("外部連携API用データの更新に失敗しました。")));
+  ereportmsg(api_update_mapped_data(g_api), &native_unmanaged(NSTR("外部API数据更新失败。")));
 }
 
 static void update_mapped_data(void) {
@@ -124,7 +124,7 @@ error_message_box(error e, HWND const window, wchar_t const *const msg, wchar_t 
 cleanup:
   ereport(sfree(&errmsg));
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("エラーダイアログの表示に失敗しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("错误对话框显示失败。")));
   }
   efree(&e);
 }
@@ -230,7 +230,7 @@ cleanup:
   ereport(sfree(&tmp));
   aviutl_set_pointers(NULL, NULL);
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("データの読み込み中にエラーが発生しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("读取数据时出错。")));
     return FALSE;
   }
   return TRUE;
@@ -280,7 +280,7 @@ cleanup:
   ereport(sfree(&u8buf));
   aviutl_set_pointers(NULL, NULL);
   if (efailed(err)) {
-    ereportmsg(err, &native_unmanaged(NSTR("データの保存中にエラーが発生しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("保存数据时出错。")));
     return FALSE;
   }
   return TRUE;
@@ -290,15 +290,15 @@ static void wndproc_drag_enter(struct files *const f, struct drag_drop_info *con
   wchar_t const *msg = NULL;
   error err = lua_init(&g_lua);
   if (efailed(err)) {
-    msg = L"Lua スクリプトの初期化中にエラーが発生しました。";
+    msg = L"Lua脚本初始化出错。";
     err = ethru(err);
     goto failed;
   }
 
   err = lua_call_on_drag_enter(&g_lua, f, ddi->point, ddi->key_state);
   if (efailed(err)) {
-    msg = eisg(err, err_abort) ? L"_entrypoint.ondragenter は中断されました。"
-                               : L"_entrypoint.ondragenter の呼び出しに失敗しました。";
+    msg = eisg(err, err_abort) ? L"_entrypoint.ondragenter被中断。"
+                               : L"_entrypoint.ondragenter呼叫失败。";
     err = ethru(err);
     goto failed;
   }
@@ -328,8 +328,8 @@ failed:
   ddi->effect = DROPEFFECT_NONE;
   ereport(lua_exit(&g_lua));
   generic_lua_error_handler(err,
-                            eisg(err, err_abort) ? L"_entrypoint.ondragover は中断されました。"
-                                                 : L"_entrypoint.ondragover の呼び出しに失敗しました。");
+                            eisg(err, err_abort) ? L"_entrypoint.ondragover被中断。"
+                                                 : L"_entrypoint.ondragover呼叫失败。");
 }
 
 static void wndproc_drag_leave(void) {
@@ -346,7 +346,7 @@ static void wndproc_drag_leave(void) {
 
 failed:
   ereport(lua_exit(&g_lua));
-  generic_lua_error_handler(err, L"_entrypoint.ondragleave の呼び出しに失敗しました。");
+  generic_lua_error_handler(err, L"_entrypoint.ondragleave呼叫失败。");
 }
 
 static void wndproc_drop(struct files *const f, struct drag_drop_info *const ddi) {
@@ -367,8 +367,8 @@ failed:
   ddi->effect = DROPEFFECT_NONE;
   ereport(lua_exit(&g_lua));
   generic_lua_error_handler(err,
-                            eisg(err, err_abort) ? L"_entrypoint.ondrop は中断されました。"
-                                                 : L"_entrypoint.ondrop の呼び出しに失敗しました。");
+                            eisg(err, err_abort) ? L"_entrypoint.ondrop被中断。"
+                                                 : L"_entrypoint.ondrop呼叫失败。");
 }
 
 struct drag_drop_handler_data {
@@ -403,7 +403,7 @@ static void drop_task(void *const userdata) {
                DROP_TARGET_DROP,
                (LPARAM) & (struct drag_drop_handler_data){&d->f, &d->ddi});
   bool succeeded = d->ddi.effect == DROPEFFECT_COPY;
-  ereportmsg(files_free(&d->f, succeeded), &native_unmanaged(NSTR("使用済みファイルの整理に失敗しました。")));
+  ereportmsg(files_free(&d->f, succeeded), &native_unmanaged(NSTR("无法清理使用完的文件。。")));
   files_cleanup(!succeeded);
   ereport(mem_free(&d));
 }
@@ -417,7 +417,7 @@ static void drop_callback(struct files *const f, struct drag_drop_info *const dd
   if (efailed(err)) {
     err = ethru(err);
     ddi->effect = DROPEFFECT_NONE;
-    ereportmsg(err, &native_unmanaged(NSTR("タスク用データのメモリ確保に失敗しました。")));
+    ereportmsg(err, &native_unmanaged(NSTR("任务所用数据内存分配失败。")));
     return;
   }
 
@@ -471,7 +471,7 @@ cleanup:
   ereport(scpopup_menu_free(&m));
   files_cleanup(efailed(err));
   if (efailed(err)) {
-    generic_lua_error_handler(err, L"拡張ポップアップメニューの表示に失敗しました。");
+    generic_lua_error_handler(err, L"扩展弹出菜单显示失败。");
   }
   return 0;
 }
@@ -490,7 +490,7 @@ NODISCARD static error get_exedit_scrollbars(HWND const exedit_window, HWND *con
     if (!h) {
       return emsg(err_type_generic,
                   err_fail,
-                  &native_unmanaged(NSTR("拡張編集ウィンドウ内のスクロールバーを検出できませんでした。")));
+                  &native_unmanaged(NSTR("无法检测扩展编辑窗口滚动条。")));
     }
     if (GetWindowLongPtrW(h, GWL_ID) != ID_SCROLLBAR) {
       continue;
@@ -590,7 +590,7 @@ NODISCARD static error process_api(struct api_request_params const *const params
       goto cleanup;
     }
     if (ai.edit_cursor.x == -1 && ai.edit_cursor.y == -1) {
-      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("現在のカーソル位置の検出に失敗しました。")));
+      err = emsg(err_type_generic, err_fail, &native_unmanaged(NSTR("无法检测当前光标位置。")));
       goto cleanup;
     }
   }
@@ -757,7 +757,7 @@ cleanup:
   if (efailed(err)) {
     error_message_box(err,
                       (HWND)params->userdata,
-                      L"外部連携 API の処理中にエラーが発生しました。",
+                      L"处理外部API时出错。",
                       GCMZDROPS_NAME_VERSION_WIDE,
                       false);
   }
@@ -765,35 +765,35 @@ cleanup:
   return;
 }
 
-#define ERRMSG_INIT GCMZDROPS_NAME_WIDE L"の初期化中にエラーが発生しました。"
+#define ERRMSG_INIT GCMZDROPS_NAME_WIDE L"初始化出错。"
 
 static BOOL wndproc_init(HWND const window) {
   task_init(window);
-  ereportmsg(gui_init(window), &native_unmanaged(NSTR("GUI の初期化中にエラーが発生しました。")));
+  ereportmsg(gui_init(window), &native_unmanaged(NSTR("GUI初始化出错。")));
 
   error err = aviutl_init();
   if (efailed(err)) {
     wchar_t const *msg = NULL;
     if (eis(err, err_type_gcmz, err_gcmz_unsupported_aviutl_version)) {
-      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"を使うには AviUtl version 1.00 以降が必要です。";
+      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"仅支持1.00版本以上的AviUtl。";
       efree(&err);
     } else if (eis(err, err_type_gcmz, err_gcmz_exedit_not_found)) {
       msg = ERRMSG_INIT L"\r\n\r\n"
-                        L"拡張編集プラグインが見つかりません。";
+                        L"找不到扩展编辑插件。";
       efree(&err);
     } else if (eis(err, err_type_gcmz, err_gcmz_exedit_not_found_in_same_dir)) {
       msg = ERRMSG_INIT L"\r\n\r\n"
-                        L"インストール状態が正しくありません。\r\n"
-                        L"付属のドキュメントに従ってインストールしてください。";
+                        L"安装状态不正确。\r\n"
+                        L"按照附属文档安装。";
       efree(&err);
     } else if (eis(err, err_type_gcmz, err_gcmz_unsupported_exedit_version)) {
-      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"を使うには 拡張編集 version 0.92 以降が必要です。";
+      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"仅支持0.92版本以上的扩展编辑。";
       efree(&err);
     } else if (eis(err, err_type_gcmz, err_gcmz_extext_found)) {
-      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"は字幕アシストプラグイン(extext.auf) とは共存できません。";
+      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"与字幕辅助插件(extext.auf)无法共存。";
       efree(&err);
     } else if (eis(err, err_type_gcmz, err_gcmz_oledd_found)) {
-      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"の古いバージョンである oledd.auf とは共存できません。";
+      msg = ERRMSG_INIT L"\r\n\r\n" GCMZDROPS_NAME_WIDE L"与旧版oledd.auf无法共存。";
       efree(&err);
     } else {
       msg = ERRMSG_INIT;
@@ -810,7 +810,7 @@ static BOOL wndproc_init(HWND const window) {
     error_message_box(err,
                       window,
                       ERRMSG_INIT L"\r\n\r\n"
-                                  L"ドラッグ＆ドロップハンドラーの作成に失敗しました。",
+                                  L"未能创建拖放句柄。",
                       GCMZDROPS_NAME_VERSION_WIDE,
                       false);
     return FALSE;
@@ -832,9 +832,9 @@ static BOOL wndproc_init(HWND const window) {
     wchar_t const *msg = NULL;
     if (eis_hr(err, DRAGDROP_E_ALREADYREGISTERED)) {
       msg = ERRMSG_INIT L"\r\n\r\n"
-                        L"ドラッグ＆ドロップハンドラーの登録に失敗しました。\r\n"
-                        L"ドラッグ＆ドロップ処理に介入する他のプラグインと競合している可能性があります。\r\n"
-                        L"導入済みプラグインを見直してください。";
+                        L"拖放句柄注册失败。\r\n"
+                        L"可能与其他拖放相关插件出现冲突。\r\n"
+                        L"请检查已安装的插件。";
       efree(&err);
     } else {
       msg = ERRMSG_INIT;
@@ -848,8 +848,8 @@ static BOOL wndproc_init(HWND const window) {
   err = scpopup_init(&g_scpopup, exedit_window);
   if (efailed(err)) {
 #define ERRMSG_INITSCDROPPER                                                                                           \
-  L"コンテキストメニューハンドラーの登録に失敗しました。\r\n"                                \
-  L"拡張ポップアップメニューは使用できません。"
+  L"右键选单句柄注册失败。\r\n"                                \
+  L"扩展弹出菜单不可用。"
     error_message_box(err, window, ERRMSG_INITSCDROPPER, GCMZDROPS_NAME_VERSION_WIDE, false);
 #undef ERRMSG_INITSCDROPPER
   } else {
@@ -859,14 +859,14 @@ static BOOL wndproc_init(HWND const window) {
   err = api_init(&g_api);
   if (efailed(err)) {
 #define ERRMSG_INITAPI                                                                                                 \
-  L"外部連携用 API の初期化中にエラーが発生しました。\r\n"                                       \
-  L"外部連携用 API は利用できません。"
+  L"外部API初始化出错。\r\n"                                       \
+  L"无法使用外部API。"
 
     wchar_t const *msg = NULL;
     if (eis_hr(err, HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))) {
       msg = ERRMSG_INITAPI L"\r\n\r\n"
-                           L"このエラーは主に AviUtl を多重起動した場合に発生します。\r\n"
-                           L"一度すべての AviUtl を閉じて、ひとつだけを起動してください。";
+                           L"此错误主要发生在同时开启多个AviUtl的情况下。\r\n"
+                           L"关闭所有AviUtl，仅启动一个。";
       efree(&err);
     } else {
       msg = ERRMSG_INITAPI;
@@ -887,18 +887,18 @@ static BOOL wndproc_exit(void) {
   ereport(lua_exit(&g_lua));
 
   if (api_initialized(g_api)) {
-    ereportmsg(api_exit(&g_api), &native_unmanaged(NSTR("外部連携用 API の終了に失敗しました。")));
+    ereportmsg(api_exit(&g_api), &native_unmanaged(NSTR("无法终止外部API。")));
   }
 
   if (g_scpopup.window) {
     ereportmsg(scpopup_exit(&g_scpopup),
-               &native_unmanaged(NSTR("コンテキストメニューハンドラーの登録解除に失敗しました。")));
+               &native_unmanaged(NSTR("右键选单句柄注销失败。")));
   }
 
   if (g_drop_target_registered) {
     HRESULT hr = RevokeDragDrop(aviutl_get_exedit_window_must());
     if (FAILED(hr)) {
-      ereportmsg(errhr(hr), &native_unmanaged(NSTR("ドラッグ＆ドロップハンドラーの登録解除に失敗しました。")));
+      ereportmsg(errhr(hr), &native_unmanaged(NSTR("拖放句柄注销失败。")));
     }
   }
   ereport(aviutl_exit());
